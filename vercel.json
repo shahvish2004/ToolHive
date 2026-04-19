@@ -1,0 +1,17 @@
+{
+  "version": 2,
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "/server-modern.js"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/index-modern.html"
+    }
+  ],
+  "env": {
+    "NODE_ENV": "production"
+  },
+  "outputDirectory": "."
+}

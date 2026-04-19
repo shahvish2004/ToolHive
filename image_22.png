@@ -1,0 +1,11 @@
+This is a placeholder for the Wrench-Bee mascot image.
+For deployment, you'll need to upload the actual image_22.png file.
+
+The current HTML references this image in:
+- Favicon: <link rel="icon" href="image_22.png" type="image/png">
+- Navigation: <img src="image_22.png" style="width: 40px; height: 40px; object-fit: contain;" />
+
+To fix this:
+1. Upload your actual image_22.png file to this directory
+2. Or replace with a different logo file
+3. Update the HTML to reference the correct image path

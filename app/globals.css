@@ -1,0 +1,96 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --construction-amber: #F59E0B;
+  --construction-amber-light: #FCD34D;
+  --deep-slate: #1E293B;
+  --deep-slate-light: #334155;
+  --toolhive-gray: #F8FAFC;
+  --white: #FFFFFF;
+  --success: #10B981;
+  --error: #EF4444;
+}
+
+@layer base {
+  * {
+    @apply box-border;
+  }
+  
+  body {
+    @apply bg-toolhive-gray text-deep-slate font-engineering antialiased;
+  }
+}
+
+@layer components {
+  .hexagon-clip {
+    clip-path: polygon(12% 0%, 88% 0%, 100% 50%, 88% 100%, 12% 100%, 0% 50%);
+  }
+  
+  .btn-primary {
+    @apply bg-construction-amber text-deep-slate font-bold py-3 px-6 rounded-lg transition-all duration-300 hover:bg-construction-amber-light hover:transform hover:-translate-y-1 hover:shadow-lg;
+  }
+  
+  .btn-secondary {
+    @apply bg-deep-slate text-white font-bold py-3 px-6 rounded-lg transition-all duration-300 hover:bg-deep-slate-light;
+  }
+  
+  .card-hexagon {
+    @apply bg-white border-2 border-construction-amber p-6 text-center transition-all duration-300 hover:transform hover:-translate-y-2 hover:shadow-xl;
+  }
+  
+  .sidebar-item {
+    @apply flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 hover:bg-construction-amber hover:text-deep-slate cursor-pointer;
+  }
+  
+  .sidebar-item.active {
+    @apply bg-construction-amber text-deep-slate;
+  }
+  
+  .token-display {
+    @apply bg-construction-amber text-deep-slate font-bold px-4 py-2 rounded-lg;
+  }
+  
+  .deposit-card {
+    @apply bg-white border-2 border-construction-amber rounded-xl p-6 shadow-lg;
+  }
+  
+  .engineering-card {
+    @apply bg-white rounded-xl p-6 shadow-sm border border-gray-200;
+  }
+  
+  .engineering-header {
+    @apply bg-gradient-to-r from-deep-slate to-deep-slate-light text-white rounded-xl p-6;
+  }
+  
+  .security-badge {
+    @apply inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800;
+  }
+  
+  .warning-badge {
+    @apply inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium bg-yellow-100 text-yellow-800;
+  }
+  
+  .error-badge {
+    @apply inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium bg-red-100 text-red-800;
+  }
+}
+
+@layer utilities {
+  .text-gradient {
+    @apply bg-gradient-to-r from-construction-amber to-construction-amber-light bg-clip-text text-transparent;
+  }
+  
+  .bg-engineering {
+    @apply bg-gradient-to-br from-deep-slate via-deep-slate-light to-toolhive-gray;
+  }
+  
+  .shadow-engineering {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  }
+  
+  .border-engineering {
+    @apply border border-gray-200;
+  }
+}

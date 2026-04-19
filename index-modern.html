@@ -1,0 +1,1083 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ToolHive™ - Modern Cloud Platform</title>
+    <link rel="icon" href="https://i.imgur.com/2cmzqhj.png" type="image/png">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://js.stripe.com/v3/"></script>
+    <style>
+        :root {
+            --construction-amber: #F59E0B;
+            --deep-slate: #1E293B;
+            --amber-light: #FCD34D;
+            --slate-light: #334155;
+            --white: #FFFFFF;
+            --gray-light: #F8FAFC;
+            --success: #10B981;
+            --error: #EF4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, var(--gray-light) 0%, var(--white) 100%);
+            color: var(--deep-slate);
+            line-height: 1.6;
+        }
+
+        /* Hexagonal clip-path utility */
+        .hex-clip {
+            clip-path: polygon(12% 0%, 88% 0%, 100% 50%, 88% 100%, 12% 100%, 0% 50%);
+        }
+
+        /* Navigation */
+        nav {
+            background: var(--deep-slate);
+            padding: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .business-logo-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .business-logo-subtext {
+            font-size: 0.6rem;
+            color: var(--construction-amber);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+        }
+
+        .text-logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--construction-amber);
+            background: var(--deep-slate);
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            clip-path: polygon(12% 0%, 88% 0%, 100% 50%, 88% 100%, 12% 100%, 0% 50%);
+        }
+
+        .logo-image-wrapper {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--gray-light) 0%, var(--white) 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            clip-path: polygon(12% 0%, 88% 0%, 100% 50%, 88% 100%, 12% 100%, 0% 50%);
+        }
+
+        .logo-img {
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
+        }
+
+        .brand-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo-hexagon {
+            background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            clip-path: polygon(12% 0%, 88% 0%, 100% 50%, 88% 100%, 12% 100%, 0% 50%);
+            overflow: hidden;
+        }
+
+        .logo-hexagon img {
+            width: 28px;
+            height: 28px;
+            object-fit: contain;
+        }
+
+        .brand-name {
+            color: var(--white);
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .tagline {
+            color: var(--construction-amber);
+            font-size: 0.875rem;
+            font-style: italic;
+            margin-left: 2rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--white);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--construction-amber);
+        }
+
+        .wallet-display {
+            background: var(--construction-amber);
+            color: var(--deep-slate);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: bold;
+            clip-path: polygon(12% 0%, 88% 0%, 100% 50%, 88% 100%, 12% 100%, 0% 50%);
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .auth-button {
+            background: var(--construction-amber);
+            color: var(--deep-slate);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .auth-button:hover {
+            background: var(--amber-light);
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 4rem 2rem;
+            text-align: center;
+            background: linear-gradient(135deg, var(--deep-slate) 0%, var(--slate-light) 100%);
+            color: var(--white);
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--construction-amber);
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .cta-button {
+            background: var(--construction-amber);
+            color: var(--deep-slate);
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            clip-path: polygon(12% 0%, 88% 0%, 100% 50%, 88% 100%, 12% 100%, 0% 50%);
+        }
+
+        .cta-button:hover {
+            background: var(--amber-light);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(245, 158, 11, 0.3);
+        }
+
+        /* Honeycomb Grid */
+        .honeycomb-section {
+            padding: 4rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            color: var(--deep-slate);
+            margin-bottom: 3rem;
+        }
+
+        .honeycomb-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            padding: 2rem 0;
+        }
+
+        .tool-card {
+            background: var(--white);
+            border: 2px solid var(--construction-amber);
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s;
+            clip-path: polygon(12% 0%, 88% 0%, 100% 50%, 88% 100%, 12% 100%, 0% 50%);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tool-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, var(--construction-amber) 0%, var(--amber-light) 100%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .tool-card:hover::before {
+            opacity: 0.1;
+        }
+
+        .tool-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(245, 158, 11, 0.2);
+        }
+
+        .tool-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .tool-name {
+            font-weight: bold;
+            color: var(--deep-slate);
+            margin-bottom: 0.5rem;
+        }
+
+        .tool-availability {
+            color: var(--slate-light);
+            font-size: 0.875rem;
+        }
+
+        /* Token Exchange Section */
+        .token-section {
+            background: var(--deep-slate);
+            color: var(--white);
+            padding: 4rem 2rem;
+            text-align: center;
+        }
+
+        .exchange-container {
+            max-width: 600px;
+            margin: 2rem auto;
+            background: var(--white);
+            color: var(--deep-slate);
+            padding: 2rem;
+            border-radius: 15px;
+            clip-path: polygon(12% 0%, 88% 0%, 100% 50%, 88% 100%, 12% 100%, 0% 50%);
+        }
+
+        .exchange-rates {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .rate-card {
+            padding: 1.5rem;
+            background: var(--gray-light);
+            border-radius: 10px;
+            clip-path: polygon(12% 0%, 88% 0%, 100% 50%, 88% 100%, 12% 100%, 0% 50%);
+        }
+
+        .rate-title {
+            font-weight: bold;
+            color: var(--construction-amber);
+            margin-bottom: 0.5rem;
+        }
+
+        .rate-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .exchange-button {
+            background: var(--construction-amber);
+            color: var(--deep-slate);
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 25px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            clip-path: polygon(12% 0%, 88% 0%, 100% 50%, 88% 100%, 12% 100%, 0% 50%);
+            margin: 0.5rem;
+        }
+
+        .exchange-button:hover {
+            background: var(--amber-light);
+            transform: translateY(-2px);
+        }
+
+        .exchange-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Mining Rewards Section */
+        .mining-section {
+            padding: 4rem 2rem;
+            background: var(--gray-light);
+        }
+
+        .rewards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 1000px;
+            margin: 2rem auto;
+        }
+
+        .reward-card {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 15px;
+            clip-path: polygon(12% 0%, 88% 0%, 100% 50%, 88% 100%, 12% 100%, 0% 50%);
+            border: 2px solid var(--construction-amber);
+            text-align: center;
+        }
+
+        .reward-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .reward-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--deep-slate);
+            margin-bottom: 1rem;
+        }
+
+        .reward-description {
+            color: var(--slate-light);
+            margin-bottom: 1rem;
+        }
+
+        .reward-amount {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--construction-amber);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--deep-slate);
+            color: var(--white);
+            padding: 3rem 2rem 1rem;
+            text-align: center;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-links a {
+            color: var(--white);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: var(--construction-amber);
+        }
+
+        .trademark-notice {
+            font-size: 0.875rem;
+            opacity: 0.8;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--slate-light);
+        }
+
+        .contact-info {
+            margin-bottom: 2rem;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: var(--white);
+            color: var(--deep-slate);
+            padding: 3rem;
+            border-radius: 20px;
+            max-width: 500px;
+            text-align: center;
+            clip-path: polygon(12% 0%, 88% 0%, 100% 50%, 88% 100%, 12% 100%, 0% 50%);
+        }
+
+        .modal h2 {
+            color: var(--construction-amber);
+            margin-bottom: 1rem;
+        }
+
+        .modal-close {
+            background: var(--construction-amber);
+            color: var(--deep-slate);
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 25px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 1rem;
+            clip-path: polygon(12% 0%, 88% 0%, 100% 50%, 88% 100%, 12% 100%, 0% 50%);
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+            color: var(--deep-slate);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--construction-amber);
+            border-radius: 10px;
+            font-size: 1rem;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2);
+        }
+
+        .submit-button {
+            background: var(--construction-amber);
+            color: var(--deep-slate);
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 25px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+        }
+
+        .submit-button:hover {
+            background: var(--amber-light);
+        }
+
+        /* Loading Spinner */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: var(--white);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 1rem 1.5rem;
+            border-radius: 10px;
+            color: var(--white);
+            font-weight: bold;
+            z-index: 3000;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .toast.success {
+            background: var(--success);
+        }
+
+        .toast.error {
+            background: var(--error);
+        }
+
+        .toast.info {
+            background: var(--construction-amber);
+            color: var(--deep-slate);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .tagline {
+                margin-left: 0;
+                text-align: center;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .honeycomb-grid {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            }
+
+            .exchange-rates {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <div class="logo-section">
+                <div class="brand-logo">
+                    <img src="https://i.imgur.com/2cmzqhj.png" style="width: 120px; height: 120px; object-fit: contain; background: transparent; mix-blend-mode: normal;" />
+                </div>
+            </div>
+            <div class="nav-links">
+                <a href="#tools">Tools</a>
+                <a href="#tokens">ToolTokens</a>
+                <a href="#rewards">Rewards</a>
+                <a href="#contact">Contact</a>
+                <div class="user-menu" id="userMenu">
+                    <button class="auth-button" id="authButton" onclick="showAuthModal()">Sign In</button>
+                    <div class="wallet-display" id="walletDisplay" style="display: none;">0.00 TT</div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <h1>Welcome to ToolHive™</h1>
+        <p>The community-powered tool sharing platform with modern cloud infrastructure</p>
+        <button class="cta-button" onclick="showAuthModal()">Start Building Together</button>
+    </section>
+
+    <!-- Honeycomb Tool Discovery -->
+    <section class="honeycomb-section" id="tools">
+        <h2 class="section-title">Discover Tools</h2>
+        <div class="honeycomb-grid" id="toolGrid">
+            <!-- Tools will be dynamically loaded -->
+        </div>
+    </section>
+
+    <!-- Token Exchange -->
+    <section class="token-section" id="tokens">
+        <h2 class="section-title">ToolToken Exchange</h2>
+        <div class="exchange-container">
+            <h3>Modern Token Economy</h3>
+            <div class="exchange-rates">
+                <div class="rate-card">
+                    <div class="rate-title">Purchase Rate</div>
+                    <div class="rate-value" id="purchaseRate">$1.25 CAD</div>
+                    <div>per ToolToken</div>
+                </div>
+                <div class="rate-card">
+                    <div class="rate-title">Sell-Back Rate</div>
+                    <div class="rate-value" id="sellBackRate">$0.75 CAD</div>
+                    <div>per ToolToken</div>
+                </div>
+            </div>
+            <div>
+                <button class="exchange-button" id="purchaseButton" onclick="purchaseTokens()" disabled>Buy ToolTokens</button>
+                <button class="exchange-button" id="sellButton" onclick="sellTokens()" disabled>Sell ToolTokens</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Mining Rewards -->
+    <section class="mining-section" id="rewards">
+        <h2 class="section-title">Community Growth Bonuses</h2>
+        <div class="rewards-grid">
+            <div class="reward-card">
+                <div class="reward-icon"></div>
+                <div class="reward-title">Reliability Mining</div>
+                <div class="reward-description">Earn 5 TT for every five 5-star reviews</div>
+                <div class="reward-amount">+5 TT</div>
+            </div>
+            <div class="reward-card">
+                <div class="reward-icon"></div>
+                <div class="reward-title">Maintenance Mining</div>
+                <div class="reward-description">Get 2 TT for verified tool service uploads</div>
+                <div class="reward-amount">+2 TT</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contact">
+        <div class="footer-content">
+            <div class="contact-info">
+                <h3>Contact the ToolHive Team</h3>
+                <p>Email: <a href="mailto:hello@toolhive.com">hello@toolhive.com</a></p>
+                <p>Powered by Supabase, Stripe, and Vercel</p>
+            </div>
+            <div class="footer-links">
+                <a href="#tools">Tools</a>
+                <a href="#tokens">ToolTokens</a>
+                <a href="#rewards">Rewards</a>
+                <a href="mailto:hello@toolhive.com">Contact</a>
+            </div>
+            <div class="trademark-notice">
+                <p>ToolHive and ToolToken are common law trademarks. Not affiliated with Hive AI or Hive Home.</p>
+                <p>&copy; 2026 ToolHive Team. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Auth Modal -->
+    <div class="modal" id="authModal">
+        <div class="modal-content">
+            <h2 id="authTitle">Welcome to ToolHive™</h2>
+            <div id="authForm">
+                <div class="form-group">
+                    <label for="authEmail">Email</label>
+                    <input type="email" id="authEmail" placeholder="your@email.com">
+                </div>
+                <div class="form-group">
+                    <label for="authPassword">Password</label>
+                    <input type="password" id="authPassword" placeholder="Enter password">
+                </div>
+                <div class="form-group">
+                    <label for="authName">Name</label>
+                    <input type="text" id="authName" placeholder="Your full name">
+                </div>
+                <button class="submit-button" id="authSubmitButton" onclick="handleAuth()">Sign Up</button>
+                <p style="margin-top: 1rem;">
+                    <span id="authToggle">Already have an account?</span>
+                    <a href="#" onclick="toggleAuthMode()" style="color: var(--construction-amber);">Sign In</a>
+                </p>
+            </div>
+            <button class="modal-close" onclick="closeAuthModal()">Close</button>
+        </div>
+    </div>
+
+    <!-- Founding Member Modal -->
+    <div class="modal" id="foundingModal">
+        <div class="modal-content">
+            <h2> Welcome, Founding Member!</h2>
+            <p>You're one of the first 15 members of ToolHive!</p>
+            <p>You've received <strong>25.00 TT</strong> as a founding bonus!</p>
+            <button class="modal-close" onclick="closeFoundingModal()">Start Building</button>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // Global state
+        let currentUser = null;
+        let supabase = null;
+        let stripe = null;
+
+        // Initialize the platform
+        async function initializePlatform() {
+            try {
+                // Initialize Supabase
+                supabase = window.supabase.createClient(
+                    process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://your-project.supabase.co',
+                    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'your-anon-key'
+                );
+
+                // Initialize Stripe
+                stripe = Stripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || 'pk_test_your_publishable_key');
+
+                // Check for existing session
+                await checkAuthState();
+                
+                // Load platform data
+                await loadPlatformData();
+                renderTools();
+                updateUI();
+
+            } catch (error) {
+                console.error('Initialization error:', error);
+                showToast('Platform initialization failed. Using demo mode.', 'error');
+                initializeDemoMode();
+            }
+        }
+
+        // Demo mode fallback
+        function initializeDemoMode() {
+            currentUser = {
+                id: 'demo-user',
+                email: 'demo@toolhive.com',
+                name: 'Demo User',
+                is_founding_member: true
+            };
+            updateUI();
+            renderTools();
+        }
+
+        // Check authentication state
+        async function checkAuthState() {
+            const token = localStorage.getItem('toolhive_token');
+            if (token) {
+                try {
+                    const response = await fetch('/api/user/profile', {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        currentUser = data.user;
+                        currentUser.balance = data.balance.balance;
+                        localStorage.setItem('toolhive_token', token);
+                    } else {
+                        localStorage.removeItem('toolhive_token');
+                    }
+                } catch (error) {
+                    console.error('Auth check failed:', error);
+                    localStorage.removeItem('toolhive_token');
+                }
+            }
+        }
+
+        // Load platform data
+        async function loadPlatformData() {
+            try {
+                const response = await fetch('/api/stats');
+                const stats = await response.json();
+                
+                document.getElementById('purchaseRate').textContent = `$${stats.current_purchase_rate.toFixed(2)} CAD`;
+                document.getElementById('sellBackRate').textContent = `$${stats.current_sellback_rate.toFixed(2)} CAD`;
+            } catch (error) {
+                console.error('Failed to load stats:', error);
+            }
+        }
+
+        // Update UI based on auth state
+        function updateUI() {
+            const authButton = document.getElementById('authButton');
+            const walletDisplay = document.getElementById('walletDisplay');
+            const purchaseButton = document.getElementById('purchaseButton');
+            const sellButton = document.getElementById('sellButton');
+
+            if (currentUser) {
+                authButton.textContent = currentUser.name;
+                authButton.onclick = logout;
+                walletDisplay.style.display = 'block';
+                walletDisplay.textContent = `${(currentUser.balance || 0).toFixed(2)} TT`;
+                purchaseButton.disabled = false;
+                sellButton.disabled = false;
+            } else {
+                authButton.textContent = 'Sign In';
+                authButton.onclick = showAuthModal;
+                walletDisplay.style.display = 'none';
+                purchaseButton.disabled = true;
+                sellButton.disabled = true;
+            }
+        }
+
+        // Show auth modal
+        function showAuthModal() {
+            document.getElementById('authModal').style.display = 'flex';
+        }
+
+        // Close auth modal
+        function closeAuthModal() {
+            document.getElementById('authModal').style.display = 'none';
+        }
+
+        // Toggle auth mode
+        let isSignUp = true;
+        function toggleAuthMode() {
+            isSignUp = !isSignUp;
+            const authTitle = document.getElementById('authTitle');
+            const authSubmitButton = document.getElementById('authSubmitButton');
+            const authToggle = document.getElementById('authToggle');
+            const authName = document.getElementById('authName');
+            const authNameGroup = authName.closest('.form-group');
+
+            if (isSignUp) {
+                authTitle.textContent = 'Welcome to ToolHive™';
+                authSubmitButton.textContent = 'Sign Up';
+                authToggle.textContent = 'Already have an account?';
+                authNameGroup.style.display = 'block';
+            } else {
+                authTitle.textContent = 'Welcome Back';
+                authSubmitButton.textContent = 'Sign In';
+                authToggle.textContent = "Don't have an account?";
+                authNameGroup.style.display = 'none';
+            }
+        }
+
+        // Handle authentication
+        async function handleAuth() {
+            const email = document.getElementById('authEmail').value;
+            const password = document.getElementById('authPassword').value;
+            const name = document.getElementById('authName').value;
+
+            if (!email || !password) {
+                showToast('Please fill in all required fields', 'error');
+                return;
+            }
+
+            try {
+                const endpoint = isSignUp ? '/api/register' : '/api/login';
+                const body = isSignUp ? { email, password, name } : { email, password };
+
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(body)
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    currentUser = data.user;
+                    currentUser.balance = data.balance?.balance || 0;
+                    localStorage.setItem('toolhive_token', data.token);
+                    
+                    closeAuthModal();
+                    updateUI();
+                    showToast(`Welcome to ToolHive™, ${currentUser.name}!`, 'success');
+
+                    if (data.isFoundingMember) {
+                        showFoundingModal();
+                    }
+                } else {
+                    showToast(data.error || 'Authentication failed', 'error');
+                }
+            } catch (error) {
+                console.error('Auth error:', error);
+                showToast('Authentication failed. Please try again.', 'error');
+            }
+        }
+
+        // Logout
+        function logout() {
+            currentUser = null;
+            localStorage.removeItem('toolhive_token');
+            updateUI();
+            showToast('Logged out successfully', 'info');
+        }
+
+        // Show founding member modal
+        function showFoundingModal() {
+            document.getElementById('foundingModal').style.display = 'flex';
+        }
+
+        // Close founding member modal
+        function closeFoundingModal() {
+            document.getElementById('foundingModal').style.display = 'none';
+        }
+
+        // Render tools
+        async function renderTools() {
+            const toolGrid = document.getElementById('toolGrid');
+            
+            try {
+                const response = await fetch('/api/tools');
+                const tools = await response.json();
+                
+                toolGrid.innerHTML = tools.map(tool => `
+                    <div class="tool-card" onclick="selectTool('${tool.id}')">
+                        <div class="tool-icon">${tool.icon || ''}</div>
+                        <div class="tool-name">${tool.name}</div>
+                        <div class="tool-availability">${tool.available_count || tool.available || 0} available</div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Failed to load tools:', error);
+                // Fallback tools
+                const fallbackTools = [
+                    { id: 'power_drill', name: 'Power Drill', icon: ' ', available: 12 },
+                    { id: 'hammer', name: 'Hammer Set', icon: ' ', available: 8 },
+                    { id: 'lawn_mower', name: 'Lawn Mower', icon: ' ', available: 6 }
+                ];
+                
+                toolGrid.innerHTML = fallbackTools.map(tool => `
+                    <div class="tool-card" onclick="selectTool('${tool.id}')">
+                        <div class="tool-icon">${tool.icon}</div>
+                        <div class="tool-name">${tool.name}</div>
+                        <div class="tool-availability">${tool.available} available</div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        // Select tool
+        function selectTool(toolId) {
+            if (!currentUser) {
+                showToast('Please sign in to borrow tools', 'info');
+                showAuthModal();
+                return;
+            }
+            showToast(`Tool selection coming soon for ${toolId}`, 'info');
+        }
+
+        // Purchase tokens
+        async function purchaseTokens() {
+            if (!currentUser) {
+                showToast('Please sign in first', 'info');
+                return;
+            }
+
+            const amount = parseFloat(prompt('Enter amount in CAD to purchase ToolTokens:'));
+            if (!amount || amount <= 0) return;
+
+            try {
+                const response = await fetch('/api/purchase', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('toolhive_token')}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ cadAmount: amount })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    // In production, you'd use Stripe Elements here
+                    showToast(`Payment initiated for ${(amount / 1.25).toFixed(2)} TT`, 'success');
+                    
+                    // Simulate payment completion
+                    setTimeout(() => {
+                        currentUser.balance += amount / 1.25;
+                        updateUI();
+                        showToast('Payment completed successfully!', 'success');
+                    }, 2000);
+                } else {
+                    showToast(data.error || 'Purchase failed', 'error');
+                }
+            } catch (error) {
+                console.error('Purchase error:', error);
+                showToast('Purchase failed. Please try again.', 'error');
+            }
+        }
+
+        // Sell tokens
+        async function sellTokens() {
+            if (!currentUser) {
+                showToast('Please sign in first', 'info');
+                return;
+            }
+
+            const amount = parseFloat(prompt('Enter amount of ToolTokens to sell:'));
+            if (!amount || amount <= 0 || amount > currentUser.balance) {
+                if (amount > currentUser.balance) {
+                    showToast('Insufficient TT balance', 'error');
+                }
+                return;
+            }
+
+            // Simulate sell process
+            currentUser.balance -= amount;
+            updateUI();
+            showToast(`Sold ${amount.toFixed(2)} TT for $${(amount * 0.75).toFixed(2)} CAD`, 'success');
+        }
+
+        // Show toast notification
+        function showToast(message, type = 'info') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = `toast ${type}`;
+            toast.classList.add('show');
+
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', initializePlatform);
+    </script>
+</body>
+</html>

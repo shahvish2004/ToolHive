@@ -24,7 +24,7 @@ export default function Header({ title, subtitle, onMenuClick }: HeaderProps) {
             </button>
             <ToolHiveLogo size="small" />
             <div className="hidden sm:block">
-              <p className="text-sm font-bold text-deep-slate leading-tight">ToolHive�</p>
+              <p className="text-sm font-bold text-deep-slate leading-tight">ToolHive™</p>
               <p className="text-xs text-construction-amber leading-tight">Community Tool Sharing</p>
             </div>
           </div>
@@ -40,7 +40,7 @@ export default function Header({ title, subtitle, onMenuClick }: HeaderProps) {
               </div>
             </div>
             <button onClick={() => router.push('/shop')} className="hidden sm:flex items-center gap-1 px-2.5 py-1.5 bg-construction-amber/10 text-construction-amber text-xs font-medium rounded-lg hover:bg-construction-amber/20 transition-colors">
-              ?? <span>25 TT</span>
+              🪙 <span>25 TT</span>
             </button>
             <button className="relative p-2 text-gray-500 hover:text-construction-amber transition-colors">
               <Bell size={18} />

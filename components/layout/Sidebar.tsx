@@ -1,15 +1,14 @@
-﻿"use client";
+"use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const navItems = [
-  { label: "Token Shop", href: "/shop", emoji: "🪙" },
-  { label: "Tools Library", href: "/tools", emoji: "🔧" },
-  { label: "Merchandise", href: "/merch", emoji: "👕" },
-  { label: "Library Hub", href: "/library", emoji: "📚" },
-  { label: "HiveMatch™", href: "/hivematch", emoji: "🐝" },
   { label: "Membership", href: "/membership", emoji: "👑" },
-  { label: "Secure Wallet", href: "/wallet", emoji: "💳" },
+  { label: "Tool Library", href: "/tools", emoji: "🔧" },
+  { label: "HiveMatch™", href: "/hivematch", emoji: "🐝" },
+  { label: "HiveHaul Merch", href: "/merch", emoji: "👕" },
+  { label: "Token Wallet", href: "/wallet", emoji: "💳" },
+  { label: "Token Shop", href: "/shop", emoji: "🪙" },
 ];
 
 const footerItems = [

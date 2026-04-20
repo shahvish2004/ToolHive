@@ -26,13 +26,12 @@ export default function ShopPage() {
     {
       id: 'starter',
       name: 'Starter Pack',
-      amount: 25,
-      price: 9.99,
-      originalPrice: 12.99,
-      description: 'Perfect for trying out the platform',
+            amount: 10,
+            price: 12.50,
+            description: 'Perfect for trying out the platform',
       features: [
         '25 ToolTokens',
-        'Valid for 30 days',
+                '10 ToolTokens',
         'Basic tool access',
         'Community support'
       ]
@@ -40,12 +39,11 @@ export default function ShopPage() {
     {
       id: 'regular',
       name: 'Regular Pack',
-      amount: 50,
-      price: 19.99,
-      originalPrice: 25.99,
+            amount: 40,
+            price: 50.00,
       description: 'Great value for regular users',
       features: [
-        '50 ToolTokens',
+                '40 ToolTokens',
         'Valid for 60 days',
         'Priority booking',
         'Advanced search filters'
@@ -56,8 +54,7 @@ export default function ShopPage() {
       id: 'premium',
       name: 'Premium Pack',
       amount: 100,
-      price: 34.99,
-      originalPrice: 49.99,
+            price: 125.00,
       description: 'Maximum value for power users',
       features: [
         '100 ToolTokens',
@@ -71,8 +68,7 @@ export default function ShopPage() {
       id: 'enterprise',
       name: 'Enterprise Pack',
       amount: 250,
-      price: 74.99,
-      originalPrice: 99.99,
+            price: 312.50,
       description: 'For teams and businesses',
       features: [
         '250 ToolTokens',
@@ -275,6 +271,13 @@ export default function ShopPage() {
           </div>
         </div>
       </div>
+
+      {/* Sell Back Section */}
+            <div className="bg-amber-50 border border-amber-200 rounded-xl p-6">
+                    <h3 className="text-lg font-bold text-deep-slate mb-2">💰 Sell Back ToolTokens</h3>
+                    <p className="text-sm text-gray-600 mb-1">Sell your unused tokens back at <strong>$0.75 / TT</strong></p>
+                    <p className="text-xs text-gray-400">Buy rate: $1.25/TT · Sell rate: $0.75/TT · Stripe integration coming soon</p>
+                  </div>
     </div>
   )
 

@@ -224,12 +224,10 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-toolhive-gray">
       <div className="flex h-screen">
-        {/* Sidebar */}
-        <Sidebar 
-          activeTab={activeTab} 
-          onTabChange={setActiveTab} 
-          tokenBalance={tokenBalance} 
-        />
+        <Sidebar
+  isOpen={true}
+  onClose={() => {}}
+/>
 
         {/* Main Content */}
         <div className="flex-1 flex flex-col">

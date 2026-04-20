@@ -3,287 +3,242 @@
 import { useState } from 'react'
 import { useAuth } from '@/components/providers/AuthProvider'
 import DashboardLayout from '@/components/layout/DashboardLayout'
-import { ShoppingCart, CreditCard, Shield, Star, Gift, Zap, Crown, Lock, CheckCircle } from 'lucide-react'
+import { Gift, Zap, Crown, Star, CheckCircle, ArrowDownLeft } from 'lucide-react'
 
-interface TokenPackage {
-  id: string
-  name: string
-  amount: number
-  price: number
-  originalPrice?: number
-  description: string
-  features: string[]
-  popular?: boolean
-}
+const SELL_RATE = 0.75
+
+const packages = [
+  {
+    id: 'starter',
+    name: 'Starter',
+    amount: 10,
+    price: 12.50,
+    tagline: 'Try it out',
+    features: ['10 ToolTokens', 'Valid 30 days', 'Basic tool access', 'Community support'],
+    icon: Gift,
+    card: 'bg-white border border-gray-200',
+    header: 'bg-gray-100',
+    headerText: 'text-deep-slate',
+    iconBg: 'bg-gray-200',
+    iconColor: 'text-gray-600',
+    btn: 'border border-gray-300 text-gray-700 hover:bg-gray-100 active:bg-gray-200 focus:ring-gray-300',
+    popular: false,
+  },
+  {
+    id: 'regular',
+    name: 'Regular',
+    amount: 40,
+    price: 50.00,
+    tagline: 'Best for regular users',
+    features: ['40 ToolTokens', 'Valid 60 days', 'Priority booking', 'Advanced filters'],
+    icon: Star,
+    card: 'bg-slate-50 border border-slate-200',
+    header: 'bg-gradient-to-r from-slate-600 to-slate-700',
+    headerText: 'text-white',
+    iconBg: 'bg-white/20',
+    iconColor: 'text-white',
+    btn: 'bg-slate-600 text-white hover:bg-slate-700 active:bg-slate-800 shadow-sm hover:shadow focus:ring-slate-400',
+    popular: false,
+  },
+  {
+    id: 'premium',
+    name: 'Premium',
+    amount: 100,
+    price: 125.00,
+    tagline: 'Most popular choice',
+    features: ['100 ToolTokens', 'Valid 90 days', 'Exclusive tool access', 'Priority support', 'HiveMatch boost'],
+    icon: Zap,
+    card: 'bg-amber-50 border-2 border-construction-amber shadow-lg shadow-amber-100',
+    header: 'bg-gradient-to-r from-construction-amber to-yellow-400',
+    headerText: 'text-white',
+    iconBg: 'bg-white/20',
+    iconColor: 'text-white',
+    btn: 'bg-construction-amber text-white hover:bg-yellow-500 active:bg-yellow-600 shadow-md hover:shadow-lg focus:ring-yellow-400',
+    popular: true,
+  },
+  {
+    id: 'enterprise',
+    name: 'Enterprise',
+    amount: 250,
+    price: 312.50,
+    tagline: 'Maximum value',
+    features: ['250 ToolTokens', 'Valid 180 days', 'Unlimited access', 'Dedicated support', 'API access', 'Partner discounts'],
+    icon: Crown,
+    card: 'bg-deep-slate border-2 border-deep-slate-light shadow-xl',
+    header: 'bg-gradient-to-r from-deep-slate to-deep-slate-light',
+    headerText: 'text-construction-amber',
+    iconBg: 'bg-construction-amber/20',
+    iconColor: 'text-construction-amber',
+    btn: 'bg-construction-amber text-deep-slate font-bold hover:bg-yellow-400 active:bg-yellow-500 shadow-md hover:shadow-lg focus:ring-yellow-300',
+    popular: false,
+  },
+]
 
 export default function ShopPage() {
   const { user } = useAuth()
-  const [selectedPackage, setSelectedPackage] = useState<string | null>(null)
+  const [activePkg, setActivePkg] = useState<string | null>(null)
   const [tokenBalance, setTokenBalance] = useState(25.00)
-  const [purchaseSuccess, setPurchaseSuccess] = useState(false)
+  const [buySuccess, setBuySuccess] = useState<string | null>(null)
+  const [sellAmount, setSellAmount] = useState('')
+  const [sellSuccess, setSellSuccess] = useState(false)
 
-  const tokenPackages: TokenPackage[] = [
-    {
-      id: 'starter',
-      name: 'Starter Pack',
-            amount: 10,
-            price: 12.50,
-            description: 'Perfect for trying out the platform',
-      features: [
-        '25 ToolTokens',
-                '10 ToolTokens',
-        'Basic tool access',
-        'Community support'
-      ]
-    },
-    {
-      id: 'regular',
-      name: 'Regular Pack',
-            amount: 40,
-            price: 50.00,
-      description: 'Great value for regular users',
-      features: [
-                '40 ToolTokens',
-        'Valid for 60 days',
-        'Priority booking',
-        'Advanced search filters'
-      ],
-      popular: true
-    },
-    {
-      id: 'premium',
-      name: 'Premium Pack',
-      amount: 100,
-            price: 125.00,
-      description: 'Maximum value for power users',
-      features: [
-        '100 ToolTokens',
-        'Valid for 90 days',
-        'Exclusive tool access',
-        'Premium support',
-        'Monthly bonus tokens'
-      ]
-    },
-    {
-      id: 'enterprise',
-      name: 'Enterprise Pack',
-      amount: 250,
-            price: 312.50,
-      description: 'For teams and businesses',
-      features: [
-        '250 ToolTokens',
-        'Valid for 180 days',
-        'Team management',
-        'API access',
-        'Dedicated support',
-        'Custom branding'
-      ]
-    }
-  ]
+  const sellAmountNum = parseFloat(sellAmount) || 0
+  const sellPayout = (sellAmountNum * SELL_RATE).toFixed(2)
 
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('en-CA', {
-      style: 'currency',
-      currency: 'CAD'
-    }).format(price)
+  const handleBuy = (pkg: typeof packages[0]) => {
+    setActivePkg(pkg.id)
+    setTokenBalance(prev => parseFloat((prev + pkg.amount).toFixed(2)))
+    setBuySuccess(pkg.name)
+    setTimeout(() => { setBuySuccess(null); setActivePkg(null) }, 3500)
   }
 
-  const handlePurchase = (packageId: string) => {
-    if (!user) {
-      alert('Please sign in to purchase tokens')
-      return
-    }
-
-    const selectedPkg = tokenPackages.find(pkg => pkg.id === packageId)
-    if (selectedPkg) {
-      // In real app, this would process payment via Stripe
-      console.log(`Processing purchase: ${selectedPkg.name}`)
-      setTokenBalance(tokenBalance + selectedPkg.amount)
-      setSelectedPackage(packageId)
-      setPurchaseSuccess(true)
-      
-      // Reset success message after 3 seconds
-      setTimeout(() => {
-        setPurchaseSuccess(false)
-        setSelectedPackage(null)
-      }, 3000)
-    }
+  const handleSell = () => {
+    if (sellAmountNum <= 0 || sellAmountNum > tokenBalance) return
+    setTokenBalance(prev => parseFloat((prev - sellAmountNum).toFixed(2)))
+    setSellSuccess(true)
+    setSellAmount('')
+    setTimeout(() => setSellSuccess(false), 4000)
   }
-
-  const shopContent = (
-    <div className="max-w-7xl mx-auto space-y-8">
-      {/* Hero Section */}
-      <div className="bg-gradient-to-r from-construction-amber to-construction-amber-light rounded-xl p-8 text-white">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold mb-2">ToolToken Shop</h1>
-            <p className="text-lg opacity-90">Purchase ToolTokens for tool rentals</p>
-          </div>
-          <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center">
-            <CreditCard size={32} />
-          </div>
-        </div>
-      </div>
-
-      {/* Current Balance */}
-      <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
-        <div className="flex items-center justify-between">
-          <div>
-            <h3 className="text-lg font-bold text-deep-slate">Current Balance</h3>
-            <p className="text-sm text-gray-600">Your available ToolTokens</p>
-          </div>
-          <div className="text-3xl font-bold text-construction-amber">
-            {tokenBalance.toFixed(2)} TT
-          </div>
-        </div>
-      </div>
-
-      {/* Purchase Success Message */}
-      {purchaseSuccess && (
-        <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-          <div className="flex items-center gap-3">
-            <Gift className="text-green-600" size={24} />
-            <div>
-              <h3 className="font-medium text-green-900">Purchase Successful!</h3>
-              <p className="text-sm text-green-700">Your ToolTokens have been added to your account.</p>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Token Packages */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {tokenPackages.map((pkg) => {
-          const isSelected = selectedPackage === pkg.id
-          
-          return (
-            <div
-              key={pkg.id}
-              className={`bg-white rounded-xl shadow-sm border-2 transition-all ${
-                pkg.popular ? 'border-construction-amber' : 'border-gray-200'
-              }`}
-            >
-              {pkg.popular && (
-                <div className="bg-construction-amber text-white text-center py-2 px-4 rounded-t-xl text-sm font-medium">
-                  Most Popular
-                </div>
-              )}
-              
-              <div className="p-6">
-                <h3 className="text-xl font-bold text-deep-slate mb-2">{pkg.name}</h3>
-                <p className="text-sm text-gray-600 mb-4">{pkg.description}</p>
-                
-                <div className="text-center mb-4">
-                  <div className="text-3xl font-bold text-construction-amber mb-1">
-                    {pkg.amount} TT
-                  </div>
-                  <div className="flex items-center justify-center gap-2">
-                    {pkg.originalPrice && (
-                      <span className="text-sm text-gray-400 line-through">
-                        {formatPrice(pkg.originalPrice)}
-                      </span>
-                    )}
-                    <span className="text-lg font-bold text-deep-slate">
-                      {formatPrice(pkg.price)}
-                    </span>
-                  </div>
-                </div>
-                
-                <ul className="space-y-2 mb-6">
-                  {pkg.features.map((feature, index) => (
-                    <li key={index} className="flex items-start gap-2">
-                      <CheckCircle className="text-green-600 mt-0.5 flex-shrink-0" size={16} />
-                      <span className="text-sm text-gray-700">{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-                
-                <button
-                  onClick={() => handlePurchase(pkg.id)}
-                  disabled={isSelected}
-                  className={`w-full py-3 px-4 rounded-lg font-medium transition-colors ${
-                    isSelected
-                      ? 'bg-green-600 text-white'
-                      : pkg.popular
-                        ? 'bg-construction-amber text-white hover:bg-construction-amber-light'
-                        : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                  }`}
-                >
-                  {isSelected ? 'Purchased!' : 'Buy Now'}
-                </button>
-              </div>
-            </div>
-          )
-        })}
-      </div>
-
-      {/* Benefits Section */}
-      <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
-        <h3 className="text-xl font-bold text-deep-slate mb-6">Why Choose ToolTokens?</h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="flex items-start gap-3">
-            <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
-              <Shield className="text-blue-600" size={20} />
-            </div>
-            <div>
-              <h4 className="font-medium text-deep-slate mb-1">Secure Payments</h4>
-              <p className="text-sm text-gray-600">All transactions are encrypted and protected</p>
-            </div>
-          </div>
-          
-          <div className="flex items-start gap-3">
-            <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
-              <Zap className="text-green-600" size={20} />
-            </div>
-            <div>
-              <h4 className="font-medium text-deep-slate mb-1">Instant Access</h4>
-              <p className="text-sm text-gray-600">Tokens are available immediately after purchase</p>
-            </div>
-          </div>
-          
-          <div className="flex items-start gap-3">
-            <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center flex-shrink-0">
-              <Crown className="text-purple-600" size={20} />
-            </div>
-            <div>
-              <h4 className="font-medium text-deep-slate mb-1">Best Value</h4>
-              <p className="text-sm text-gray-600">Competitive pricing with regular promotions</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* FAQ Section */}
-      <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
-        <h3 className="text-xl font-bold text-deep-slate mb-6">Frequently Asked Questions</h3>
-        <div className="space-y-4">
-          <div>
-            <h4 className="font-medium text-deep-slate mb-2">What are ToolTokens?</h4>
-            <p className="text-sm text-gray-600">ToolTokens are the digital currency used to rent tools on the ToolHive platform.</p>
-          </div>
-          <div>
-            <h4 className="font-medium text-deep-slate mb-2">How long do tokens last?</h4>
-            <p className="text-sm text-gray-600">Token validity depends on the package purchased, ranging from 30 to 180 days.</p>
-          </div>
-          <div>
-            <h4 className="font-medium text-deep-slate mb-2">Can I get a refund?</h4>
-            <p className="text-sm text-gray-600">Refunds are available within 7 days of purchase if tokens haven't been used.</p>
-          </div>
-        </div>
-      </div>
-
-      {/* Sell Back Section */}
-            <div className="bg-amber-50 border border-amber-200 rounded-xl p-6">
-                    <h3 className="text-lg font-bold text-deep-slate mb-2">💰 Sell Back ToolTokens</h3>
-                    <p className="text-sm text-gray-600 mb-1">Sell your unused tokens back at <strong>$0.75 / TT</strong></p>
-                    <p className="text-xs text-gray-400">Buy rate: $1.25/TT · Sell rate: $0.75/TT · Stripe integration coming soon</p>
-                  </div>
-    </div>
-  )
 
   return (
-    <DashboardLayout title="ToolToken Shop" subtitle="Purchase ToolTokens for tool rentals">
-      {shopContent}
+    <DashboardLayout title="Token Shop" subtitle="Buy or sell ToolTokens">
+      <div className="max-w-6xl mx-auto space-y-8">
+
+        {/* Balance bar */}
+        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm px-6 py-4 flex items-center justify-between">
+          <div>
+            <p className="text-xs text-gray-400 uppercase tracking-wide">Your Balance</p>
+            <p className="text-2xl font-extrabold text-construction-amber">{tokenBalance.toFixed(2)} TT</p>
+          </div>
+          <div className="text-right">
+            <p className="text-xs text-gray-400">Buy at <strong>$1.25/TT</strong></p>
+            <p className="text-xs text-gray-400">Sell at <strong>$0.75/TT</strong></p>
+          </div>
+        </div>
+
+        {buySuccess && (
+          <div className="bg-green-50 border border-green-200 text-green-700 text-sm rounded-xl px-5 py-4 flex items-center gap-3">
+            <CheckCircle size={18} />
+            {buySuccess} purchased! Tokens added to your wallet.
+          </div>
+        )}
+
+        {/* Buy Cards */}
+        <div>
+          <h2 className="text-xl font-bold text-deep-slate mb-4">Buy ToolTokens</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch">
+            {packages.map(pkg => {
+              const Icon = pkg.icon
+              const isActive = activePkg === pkg.id
+              return (
+                <div
+                  key={pkg.id}
+                  className={[
+                    'relative rounded-2xl overflow-hidden flex flex-col transition-transform duration-200',
+                    pkg.card,
+                    pkg.popular ? 'scale-105 z-10' : 'hover:scale-102',
+                    isActive ? 'ring-4 ring-construction-amber ring-offset-2' : '',
+                  ].join(' ')}
+                >
+                  {pkg.popular && (
+                    <div className="absolute top-0 left-0 right-0 text-center py-1 bg-construction-amber text-white text-xs font-bold uppercase tracking-widest">
+                      Most Popular
+                    </div>
+                  )}
+                  <div className={['p-5 flex flex-col items-center text-center', pkg.header, pkg.popular ? 'pt-8' : ''].join(' ')}>
+                    <div className={['w-12 h-12 rounded-full flex items-center justify-center mb-2', pkg.iconBg].join(' ')}>
+                      <Icon size={24} className={pkg.iconColor} />
+                    </div>
+                    <h3 className={['text-lg font-extrabold mb-1', pkg.headerText].join(' ')}>{pkg.name}</h3>
+                    <div className={['flex items-baseline gap-0.5', pkg.headerText].join(' ')}>
+                      <span className="text-3xl font-extrabold">{pkg.amount}</span>
+                      <span className="text-sm opacity-80 ml-1">TT</span>
+                    </div>
+                    <p className={['text-xl font-bold mt-1', pkg.headerText].join(' ')}>${pkg.price.toFixed(2)}</p>
+                    <p className={['text-xs opacity-70 mt-1', pkg.headerText].join(' ')}>{pkg.tagline}</p>
+                  </div>
+                  <div className="p-5 flex-1 flex flex-col">
+                    <ul className="space-y-2 flex-1 mb-4">
+                      {pkg.features.map((f, i) => (
+                        <li key={i} className="flex items-start gap-2 text-sm">
+                          <CheckCircle size={14} className={pkg.popular ? 'text-construction-amber mt-0.5 flex-shrink-0' : 'text-green-500 mt-0.5 flex-shrink-0'} />
+                          <span className={pkg.id === 'enterprise' ? 'text-gray-300' : 'text-gray-600'}>{f}</span>
+                        </li>
+                      ))}
+                    </ul>
+                    <button
+                      onClick={() => handleBuy(pkg)}
+                      disabled={isActive}
+                      className={[
+                        'w-full py-2.5 px-4 rounded-xl font-semibold text-sm transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-offset-2',
+                        isActive ? 'bg-green-500 text-white cursor-default' : pkg.btn,
+                      ].join(' ')}
+                    >
+                      {isActive ? 'Purchased!' : 'Buy ' + pkg.name}
+                    </button>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        </div>
+
+        {/* Sell Back Section */}
+        <div className="bg-white rounded-2xl shadow-sm border border-amber-100 overflow-hidden">
+          <div className="bg-gradient-to-r from-amber-400 to-yellow-300 px-6 py-4 flex items-center gap-3">
+            <ArrowDownLeft size={20} className="text-white" />
+            <div>
+              <h3 className="font-bold text-white">Sell Back ToolTokens</h3>
+              <p className="text-white/80 text-xs">Sell unused tokens at $0.75/TT · Stripe coming soon</p>
+            </div>
+          </div>
+          <div className="p-6 flex flex-col sm:flex-row gap-6 items-end">
+            <div className="flex-1">
+              <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Amount to Sell (TT)</label>
+              <input
+                type="number"
+                value={sellAmount}
+                onChange={e => setSellAmount(e.target.value)}
+                placeholder="0.00"
+                min="0"
+                className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-construction-amber"
+              />
+              <p className="text-xs text-gray-400 mt-1">Available: {tokenBalance.toFixed(2)} TT</p>
+            </div>
+            {sellAmountNum > 0 && (
+              <div className="bg-gray-50 rounded-xl p-4 border border-gray-100 text-sm min-w-44">
+                <div className="flex justify-between mb-1">
+                  <span className="text-gray-500">Tokens</span>
+                  <span className="font-semibold">{sellAmountNum.toFixed(2)} TT</span>
+                </div>
+                <div className="flex justify-between mb-1">
+                  <span className="text-gray-500">Rate</span>
+                  <span className="font-semibold">$0.75/TT</span>
+                </div>
+                <div className="flex justify-between border-t pt-1">
+                  <span className="font-bold">You get</span>
+                  <span className="font-extrabold text-green-600">${sellPayout} CAD</span>
+                </div>
+              </div>
+            )}
+            <button
+              onClick={handleSell}
+              disabled={!sellAmount || sellAmountNum <= 0 || sellAmountNum > tokenBalance}
+              className="bg-red-500 text-white font-bold px-6 py-2.5 rounded-xl hover:bg-red-600 active:bg-red-700 transition-colors shadow-sm hover:shadow disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2 whitespace-nowrap"
+            >
+              Sell Tokens
+            </button>
+          </div>
+          {sellSuccess && (
+            <div className="mx-6 mb-6 bg-green-50 border border-green-200 text-green-700 text-sm rounded-lg px-4 py-3">
+              Sell request queued. Payout of ${sellPayout} CAD will be processed when Stripe is live.
+            </div>
+          )}
+        </div>
+
+        <p className="text-center text-xs text-gray-400">Prices in CAD. Stripe payment integration coming soon.</p>
+
+      </div>
     </DashboardLayout>
   )
 }

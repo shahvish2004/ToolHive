@@ -1,5 +1,4 @@
 ﻿"use client";
-
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -30,12 +29,15 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
   return (
     <>
       {isOpen && (
-        <div className="fixed inset-0 z-20 md:hidden"
-          style={{ background: "#00000066" }}
-          onClick={onClose} />
+        <div
+          className="fixed inset-0 z-20 bg-black/40"
+          onClick={onClose}
+        />
       )}
       <aside
-        className={`fixed top-0 left-0 h-full z-30 flex flex-col transition-transform duration-300 md:relative md:translate-x-0 md:z-auto ${isOpen ? "translate-x-0" : "-translate-x-full"}`}
+        className={`fixed top-0 left-0 h-full z-30 flex flex-col transition-transform duration-300 ${
+          isOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
         style={{ width: 220, background: "#0F172A", borderRight: "1px solid #1E3A5F" }}
       >
         <div className="px-5 py-5" style={{ borderBottom: "1px solid #1E3A5F" }}>
@@ -43,7 +45,6 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
             <span className="text-lg font-black" style={{ color: "#F59E0B" }}>ToolHive™</span>
           </Link>
         </div>
-
         <nav className="flex-1 px-3 py-4 overflow-y-auto">
           <p className="text-xs font-bold uppercase tracking-widest px-2 mb-2" style={{ color: "#475569" }}>Menu</p>
           {navItems.map((item) => {
@@ -62,7 +63,6 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
             );
           })}
         </nav>
-
         <div className="px-3 pb-5" style={{ borderTop: "1px solid #1E3A5F" }}>
           <p className="text-xs font-bold uppercase tracking-widest px-2 mt-4 mb-2" style={{ color: "#475569" }}>Info</p>
           {footerItems.map((item) => {

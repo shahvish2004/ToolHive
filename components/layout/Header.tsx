@@ -1,6 +1,5 @@
 'use client'
-
-import { Bell, Search, User } from 'lucide-react'
+import { Bell, Search, Menu } from 'lucide-react'
 import { useAuth } from '@/components/providers/AuthProvider'
 import { useRouter } from 'next/navigation'
 import ToolHiveLogo from '@/components/brand/ToolHiveLogo'
@@ -8,9 +7,10 @@ import ToolHiveLogo from '@/components/brand/ToolHiveLogo'
 interface HeaderProps {
   title: string
   subtitle?: string
+  onMenuClick?: () => void
 }
 
-export default function Header({ title, subtitle }: HeaderProps) {
+export default function Header({ title, subtitle, onMenuClick }: HeaderProps) {
   const { user, signOut } = useAuth()
   const router = useRouter()
 
@@ -18,9 +18,15 @@ export default function Header({ title, subtitle }: HeaderProps) {
     <header className="bg-white border-b border-gray-200 sticky top-0 z-30 flex-shrink-0">
       <div className="px-4 sm:px-6">
         <div className="flex items-center justify-between h-16 gap-4">
-
-          {/* Logo — left side */}
+          {/* Left side: hamburger + logo */}
           <div className="flex items-center gap-2 flex-shrink-0">
+            <button
+              onClick={onMenuClick}
+              className="p-2 text-gray-500 hover:text-amber-500 transition-colors rounded-lg hover:bg-gray-100"
+              aria-label="Toggle sidebar"
+            >
+              <Menu size={22} />
+            </button>
             <ToolHiveLogo size="small" />
             <div className="hidden sm:block">
               <p className="text-sm font-bold text-deep-slate leading-tight">ToolHive™</p>
@@ -28,7 +34,7 @@ export default function Header({ title, subtitle }: HeaderProps) {
             </div>
           </div>
 
-          {/* Page Title — centered */}
+          {/* Page Title - centered */}
           <div className="flex-1 text-center">
             <h1 className="text-lg font-bold text-deep-slate leading-tight">{title}</h1>
             {subtitle && (
@@ -38,7 +44,6 @@ export default function Header({ title, subtitle }: HeaderProps) {
 
           {/* Right side actions */}
           <div className="flex items-center gap-2 flex-shrink-0">
-            {/* Search */}
             <div className="hidden md:block">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
@@ -50,7 +55,6 @@ export default function Header({ title, subtitle }: HeaderProps) {
               </div>
             </div>
 
-            {/* ToolToken wallet */}
             <button
               onClick={() => router.push('/shop')}
               className="hidden sm:flex items-center gap-1 px-2.5 py-1.5 bg-construction-amber/10 text-construction-amber text-xs font-medium rounded-lg hover:bg-construction-amber/20 transition-colors"
@@ -58,13 +62,11 @@ export default function Header({ title, subtitle }: HeaderProps) {
               🪙 <span>25 TT</span>
             </button>
 
-            {/* Notifications */}
             <button className="relative p-2 text-gray-500 hover:text-construction-amber transition-colors">
               <Bell size={18} />
               <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-red-500 rounded-full" />
             </button>
 
-            {/* User menu */}
             <div className="relative group">
               <button className="flex items-center justify-center w-9 h-9 bg-construction-amber text-deep-slate rounded-full hover:opacity-90 transition-opacity font-bold text-sm">
                 {(user?.user_metadata?.name || user?.email || 'D')[0].toUpperCase()}
@@ -84,7 +86,6 @@ export default function Header({ title, subtitle }: HeaderProps) {
               </div>
             </div>
           </div>
-
         </div>
       </div>
     </header>

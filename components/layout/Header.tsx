@@ -24,7 +24,7 @@ export default function Header({ title, subtitle, onMenuClick }: HeaderProps) {
             </button>
             <ToolHiveLogo size="small" />
             <div className="hidden sm:block">
-              <p className="text-sm font-bold text-deep-slate leading-tight">ToolHive™</p>
+              <p className="text-sm font-bold text-deep-slate leading-tight">ToolHiveï¿½</p>
               <p className="text-xs text-construction-amber leading-tight">Community Tool Sharing</p>
             </div>
           </div>

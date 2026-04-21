@@ -3,11 +3,12 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const navItems = [
-  { label: "Membership", href: "/membership", emoji: "👑" },
   { label: "Tool Library", href: "/tools", emoji: "🔧" },
   { label: "HiveMatch™", href: "/hivematch", emoji: "🐝" },
+  { label: "Library Hub", href: "/library", emoji: "📚" },
+  { label: "Membership", href: "/membership", emoji: "👑" },
   { label: "HiveHaul Merch", href: "/merch", emoji: "👕" },
-  { label: "Token Wallet", href: "/wallet", emoji: "💳" },
+  { label: "Secure Wallet", href: "/wallet", emoji: "💳" },
   { label: "Token Shop", href: "/shop", emoji: "🪙" },
 ];
 

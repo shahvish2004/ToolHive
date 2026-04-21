@@ -2,144 +2,166 @@
 import Link from "next/link";
 
 const S = {
-    bg: "#0B1628", card: "#111F33", border: "#1E3A5F",
-    gold: "#F59E0B", muted: "#64748B", text: "#94A3B8",
+  bg: "#0B1628", card: "#111F33", border: "#1E3A5F",
+  gold: "#F59E0B", muted: "#64748B", text: "#94A3B8",
 };
 
 export default function LandingPage() {
-    const go = (id: string) =>
-          document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+  const go = (id: string) =>
+    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
 
   return (
-        <div style={{ background: S.bg, color: "#fff", minHeight: "100vh", fontFamily: "system-ui,sans-serif" }}>
+    <div style={{ background: S.bg, color: "#fff", minHeight: "100vh", fontFamily: "system-ui,sans-serif" }}>
 
-          {/* NAV */}
-                <nav style={{ display:"flex", justifyContent:"space-between", alignItems:"center", padding:"1rem 2rem", borderBottom:`1px solid ${S.border}`, position:"sticky", top:0, zIndex:100, background:S.bg }}>
-                          <span style={{ fontSize:"1.4rem", fontWeight:800, color:S.gold }}>ToolHive™</span>span>
-                          <div style={{ display:"flex", gap:"1.5rem", alignItems:"center" }}>
-                                      <button onClick={()=>go("how-it-works")} style={{ background:"none", border:"none", color:"#CBD5E1", cursor:"pointer", fontSize:"0.9rem" }}>Features</button>button>
-                                      <a href="#sitemap" style={{ color:"#CBD5E1", textDecoration:"none", fontSize:"0.9rem" }}>Site Map</a>a>
-                                      <a href="#tokens" style={{ color:"#CBD5E1", textDecoration:"none", fontSize:"0.9rem" }}>Tokens</a>a>
-                                      <Link href="/" style={{ background:S.gold, color:S.bg, padding:"0.5rem 1.25rem", borderRadius:"8px", fontWeight:700, textDecoration:"none" }}>Enter App</Link>Link>
-                          </div>div>
-                </nav>nav>
+      {/* NAV */}
+      <nav style={{ display:"flex", justifyContent:"space-between", alignItems:"center", padding:"1rem 2rem", borderBottom:`1px solid ${S.border}`, position:"sticky", top:0, background:S.bg, zIndex:100 }}>
+        <span style={{ fontSize:"1.4rem", fontWeight:800, color:S.gold }}>ToolHive™</span>
+        <div style={{ display:"flex", gap:"1.5rem", alignItems:"center" }}>
+          <button onClick={()=>go("how-it-works")} style={{ background:"none", border:"none", color:"#CBD5E1", cursor:"pointer", fontSize:"0.95rem" }}>How It Works</button>
+          <a href="#sitemap" style={{ color:"#CBD5E1", textDecoration:"none", fontSize:"0.95rem" }}>Features</a>
+          <a href="#tokens" style={{ color:"#CBD5E1", textDecoration:"none", fontSize:"0.95rem" }}>Tokens</a>
+          <Link href="/" style={{ background:S.gold, color:S.bg, padding:"0.5rem 1.25rem", borderRadius:"8px", fontWeight:700, textDecoration:"none", fontSize:"0.95rem" }}>Enter App</Link>
+        </div>
+      </nav>
 
-          {/* HERO */}
-                <section style={{ textAlign:"center", padding:"5rem 1.5rem 4rem", maxWidth:"800px", margin:"0 auto" }}>
-                          <div style={{ display:"inline-block", background:"#1E3A5F", border:`1px solid ${S.gold}44`, borderRadius:"999px", padding:"0.4rem 1.2rem", fontSize:"0.8rem", color:S.gold, marginBottom:"2rem", fontWeight:600 }}>
-                                      🍯 THE TOOL-SHARING PLATFORM FOR CANADIANS
-                          </div>div>
-                          <h1 style={{ fontSize:"clamp(2.5rem,6vw,4.5rem)", fontWeight:900, lineHeight:1.1, marginBottom:"1.5rem" }}>
-                                      Rent Tools.<br/>
-                                      <span style={{ color:S.gold }}>Earn Tokens.</span>span><br/>
-                                      Build Together.
-                          </h1>h1>
-                          <p style={{ fontSize:"1.1rem", color:S.text, maxWidth:"580px", margin:"0 auto 2.5rem", lineHeight:1.7 }}>
-                                      ToolHive™ connects builders, contractors, and DIY enthusiasts with local tool owners.
-                                      Borrow what you need, share what you have, and earn ToolTokens every step of the way.
-                          </p>p>
-                          <div style={{ display:"flex", gap:"1rem", justifyContent:"center", flexWrap:"wrap" }}>
-                                      <Link href="/" style={{ background:S.gold, color:S.bg, padding:"0.85rem 2rem", borderRadius:"12px", fontWeight:700, textDecoration:"none" }}>Get Started Free</Link>Link>
-                                      <button onClick={()=>go("how-it-works")} style={{ background:"#1E2D40", border:"1px solid #334155", color:"#fff", padding:"0.85rem 2rem", borderRadius:"12px", fontWeight:600, cursor:"pointer" }}>
-                                                    See How It Works
-                                      </button>button>
-                          </div>div>
-                </section>section>
+      {/* HERO */}
+      <section style={{ textAlign:"center", padding:"6rem 1.5rem 4rem", maxWidth:"800px", margin:"0 auto" }}>
+        <div style={{ display:"inline-block", background:`${S.gold}22`, border:`1px solid ${S.gold}44`, color:S.gold, padding:"0.35rem 1rem", borderRadius:"999px", fontSize:"0.85rem", marginBottom:"1.5rem" }}>
+          ⭐ Community Tool Sharing Platform
+        </div>
+        <h1 style={{ fontSize:"clamp(2.2rem,6vw,3.75rem)", fontWeight:900, lineHeight:1.1, marginBottom:"1.5rem" }}>
+          Rent Tools.<br/>Earn Tokens.<br/>
+          <span style={{ color:S.gold }}>Build Together.</span>
+        </h1>
+        <p style={{ color:S.text, fontSize:"1.15rem", maxWidth:"560px", margin:"0 auto 2.5rem", lineHeight:1.7 }}>
+          ToolHive™ connects neighbours to share tools, earn rewards, and build a stronger community — one rental at a time.
+        </p>
+        <div style={{ display:"flex", gap:"1rem", justifyContent:"center", flexWrap:"wrap" }}>
+          <Link href="/" style={{ background:S.gold, color:S.bg, padding:"0.875rem 2.5rem", borderRadius:"12px", fontWeight:700, textDecoration:"none", fontSize:"1.05rem" }}>
+            Get Started Free
+          </Link>
+          <button onClick={()=>go("how-it-works")} style={{ background:"transparent", border:`2px solid ${S.border}`, color:"#CBD5E1", padding:"0.875rem 2.5rem", borderRadius:"12px", fontWeight:600, cursor:"pointer", fontSize:"1.05rem" }}>
+            See How It Works
+          </button>
+        </div>
+      </section>
 
-          {/* STATS */}
-                <section style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(160px,1fr))", gap:"1rem", maxWidth:"900px", margin:"0 auto 5rem", padding:"0 1.5rem" }}>
-                  {[{n:"2,400+",l:"Tools Listed"},{n:"1,200+",l:"Active Members"},{n:"48,000+",l:"Tokens Traded"},{n:"12",l:"Cities Active"}].map(s=>(
-                    <div key={s.l} style={{ background:S.card, border:`1px solid ${S.border}`, borderRadius:"16px", padding:"1.5rem", textAlign:"center" }}>
-                                  <div style={{ fontSize:"2rem", fontWeight:800, color:S.gold }}>{s.n}</div>div>
-                                  <div style={{ color:S.muted, fontSize:"0.85rem", marginTop:"0.3rem" }}>{s.l}</div>div>
-                    </div>div>
-                  ))}
-                </section>section>
+      {/* STATS */}
+      <section style={{ display:"flex", justifyContent:"center", gap:"3rem", flexWrap:"wrap", padding:"2rem 1.5rem 4rem" }}>
+        {[{v:"2,400+",l:"Tools Listed"},{v:"1,200+",l:"Active Members"},{v:"95%",l:"5-Star Ratings"},{v:"$0",l:"Sign-Up Fee"}].map(s=>(
+          <div key={s.l} style={{ textAlign:"center" }}>
+            <div style={{ fontSize:"2rem", fontWeight:800, color:S.gold }}>{s.v}</div>
+            <div style={{ color:S.text, fontSize:"0.9rem", marginTop:"0.25rem" }}>{s.l}</div>
+          </div>
+        ))}
+      </section>
 
-          {/* HOW IT WORKS */}
-                <section id="how-it-works" style={{ maxWidth:"1000px", margin:"0 auto 5rem", padding:"0 1.5rem" }}>
-                          <h2 style={{ textAlign:"center", fontSize:"2rem", fontWeight:800, marginBottom:"0.75rem" }}>How ToolHive™ Works</h2>h2>
-                          <p style={{ textAlign:"center", color:S.muted, marginBottom:"3rem" }}>Three simple steps to borrow or lend tools in your neighbourhood.</p>p>
-                          <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(260px,1fr))", gap:"1.5rem" }}>
-                            {[
-          {step:"1",icon:"🔍",title:"Browse & Discover",desc:"Search thousands of tools listed by neighbours nearby. Filter by category, distance, or availability. Find exactly what you need for your next project."},
-          {step:"2",icon:"🤝",title:"Request & Connect",desc:"Send a rental request to the owner. ToolHive handles the match, deposit, and scheduling inside the app. Your address stays private until the deposit is confirmed."},
-          {step:"3",icon:"🪙",title:"Borrow & Earn",desc:"Pick up the tool, complete your project, return it in good shape, and earn ToolTokens. Lenders earn too — putting idle tools to work for the whole community."},
-                    ].map(s=>(
-                                  <div key={s.step} style={{ background:S.card, border:`1px solid ${S.border}`, borderRadius:"20px", padding:"2rem", position:"relative" }}>
-                                                  <div style={{ position:"absolute", top:"-1px", left:"1.5rem", background:S.gold, color:S.bg, fontWeight:800, fontSize:"0.7rem", padding:"0.2rem 0.6rem", borderRadius:"0 0 8px 8px" }}>STEP {s.step}</div>div>
-                                                  <div style={{ fontSize:"2.5rem", margin:"0.75rem 0 1rem" }}>{s.icon}</div>div>
-                                                  <h3 style={{ fontSize:"1.1rem", fontWeight:700, marginBottom:"0.75rem" }}>{s.title}</h3>h3>
-                                                  <p style={{ color:S.muted, lineHeight:1.7, fontSize:"0.9rem" }}>{s.desc}</p>p>
-                                  </div>div>
-                                ))}
-                          </div>div>
-                </section>section>
+      {/* HOW IT WORKS */}
+      <section id="how-it-works" style={{ padding:"4rem 1.5rem", maxWidth:"900px", margin:"0 auto" }}>
+        <h2 style={{ textAlign:"center", fontSize:"2rem", fontWeight:800, marginBottom:"0.75rem" }}>How It Works</h2>
+        <p style={{ textAlign:"center", color:S.text, marginBottom:"3rem" }}>Three simple steps to start borrowing or earning with your tools.</p>
+        <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(250px,1fr))", gap:"1.5rem" }}>
+          {[
+            { step:"01", icon:"🔍", title:"Browse & Discover", desc:"Search tools near you by category, distance, or keyword. See owner profiles, ratings, and availability in real-time." },
+            { step:"02", icon:"🤝", title:"Request & Connect", desc:"Send a borrow request to the tool owner. Chat through the platform, agree on timing, and confirm with ToolTokens." },
+            { step:"03", icon:"🛠️", title:"Borrow & Earn", desc:"Pick up the tool, complete your project, and return it. Earn ToolTokens for every successful transaction as a lender." },
+          ].map(s=>(
+            <div key={s.step} style={{ background:S.card, border:`1px solid ${S.border}`, borderRadius:"16px", padding:"2rem 1.5rem", position:"relative" }}>
+              <div style={{ position:"absolute", top:"1rem", right:"1.25rem", background:`${S.gold}22`, color:S.gold, padding:"0.2rem 0.6rem", borderRadius:"999px", fontSize:"0.75rem", fontWeight:700 }}>STEP {s.step}</div>
+              <div style={{ fontSize:"2.5rem", marginBottom:"0.75rem" }}>{s.icon}</div>
+              <h3 style={{ fontWeight:700, marginBottom:"0.5rem" }}>{s.title}</h3>
+              <p style={{ color:S.text, fontSize:"0.9rem", lineHeight:1.6 }}>{s.desc}</p>
+            </div>
+          ))}
+        </div>
+      </section>
 
-          {/* FEATURES */}
-                <section id="features" style={{ maxWidth:"1100px", margin:"0 auto 5rem", padding:"0 1.5rem" }}>
-                          <h2 style={{ textAlign:"center", fontSize:"2rem", fontWeight:800, marginBottom:"0.5rem" }}>Everything in One Hive</h2>h2>
-                          <p style={{ textAlign:"center", color:S.muted, marginBottom:"3rem" }}>Six powerful modules — all built for the building community.</p>p>
-                          <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(300px,1fr))", gap:"1.25rem" }}>
-                            {[
-          {icon:"🔧",title:"Tool Library",href:"/tools",color:"#10B981",desc:"Browse thousands of tools for rent. Filter by category, location, or rating.",bullets:["Search by location","All categories","Owner ratings"]},
-          {icon:"🐝",title:"HiveMatch™",href:"/hivematch",color:"#F59E0B",desc:"Smart matching engine connects you with verified local tool owners for your project.",bullets:["Smart AI matching","Verified owners","Instant booking"]},
-          {icon:"👑",title:"Membership",href:"/membership",color:"#F59E0B",desc:"Free, Standard, Pro, or Elite — unlock more tools, priority support, and perks.",bullets:["4 tiers","Upgrade anytime","Token rewards"]},
-          {icon:"👕",title:"HiveHaul Merch",href:"/merch",color:"#8B5CF6",desc:"Shop exclusive ToolHive-branded apparel and gear shipped to your door.",bullets:["Branded apparel","Accessories","Fast shipping"]},
-          {icon:"💳",title:"Token Wallet",href:"/wallet",color:"#3B82F6",desc:"Secure wallet — send, receive, buy, or sell ToolTokens with real-time balance.",bullets:["Buy at $1.25/TT","Sell at $0.75/TT","Secure ledger"]},
-          {icon:"🪙",title:"Token Shop",href:"/shop",color:"#F59E0B",desc:"Purchase ToolToken packs to unlock tool rentals, memberships, and premium features.",bullets:["Starter to Elite packs","Volume discounts","Instant delivery"]},
-                    ].map(f=>(
-                                  <div key={f.title} style={{ background:S.card, border:`1px solid ${S.border}`, borderRadius:"20px", padding:"1.75rem" }}>
-                                                  <div style={{ display:"flex", alignItems:"center", gap:"0.75rem", marginBottom:"1rem" }}>
-                                                                    <div style={{ width:48, height:48, background:"#1E2D40", borderRadius:"12px", display:"flex", alignItems:"center", justifyContent:"center", fontSize:"1.4rem" }}>{f.icon}</div>div>
-                                                                    <div>
-                                                                                      <div style={{ fontWeight:700 }}>{f.title}</div>div>
-                                                                                      <div style={{ color:f.color, fontSize:"0.8rem" }}>{f.href}</div>div>
-                                                                    </div>div>
-                                                  </div>div>
-                                                <p style={{ color:S.muted, fontSize:"0.875rem", lineHeight:1.65, marginBottom:"1rem" }}>{f.desc}</p>p>
-                                    {f.bullets.map(b=><div key={b} style={{ color:S.text, fontSize:"0.8rem", marginBottom:"0.3rem" }}>✓ {b}</div>div>)}
-                                  </div>div>
-                                ))}
-                          </div>div>
-                </section>section>
-        
-          {/* TOKEN ECONOMY */}
-              <section id="tokens" style={{ maxWidth:"800px", margin:"0 auto 5rem", padding:"0 1.5rem" }}>
-                      <div style={{ background:"linear-gradient(135deg,#1E2D40,#111F33)", border:`1px solid ${S.gold}44`, borderRadius:"24px", padding:"3rem 2rem", textAlign:"center" }}>
-                                <div style={{ fontSize:"2.5rem", marginBottom:"1rem" }}>🪙</div>div>
-                                <h2 style={{ fontSize:"1.75rem", fontWeight:800, color:S.gold, marginBottom:"0.75rem" }}>ToolToken Economy</h2>h2>
-                                <p style={{ color:S.text, maxWidth:"500px", margin:"0 auto 2.5rem", lineHeight:1.65 }}>
-                                            ToolTokens (TT) power everything on the platform. Buy, earn, and spend tokens to rent tools, unlock features, and reward great owners.
-                                </p>p>
-                                <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:"1rem", marginBottom:"2rem" }}>
-                                  {[{i:"📈",v:"$1.25 / TT",l:"Buy Rate"},{i:"📉",v:"$0.75 / TT",l:"Sell Rate"},{i:"⚡",v:"Up to 10 TT/day",l:"Earn Rate"}].map(t=>(
-                        <div key={t.l} style={{ background:S.bg, borderRadius:"12px", padding:"1.25rem 0.5rem" }}>
-                                        <div style={{ fontSize:"1.5rem", marginBottom:"0.4rem" }}>{t.i}</div>div>
-                                        <div style={{ color:S.gold, fontWeight:700 }}>{t.v}</div>div>
-                                        <div style={{ color:S.muted, fontSize:"0.75rem", marginTop:"0.25rem" }}>{t.l}</div>div>
-                        </div>div>
-                      ))}
-                                </div>div>
-                                <Link href="/shop" style={{ background:S.gold, color:S.bg, padding:"0.85rem 2.5rem", borderRadius:"12px", fontWeight:700, textDecoration:"none", display:"inline-block" }}>Buy ToolTokens</Link>Link>
-                      </div>div>
-              </section>section>
-        
-          {/* SITE MAP */}
-              <section id="sitemap" style={{ maxWidth:"900px", margin:"0 auto 5rem", padding:"0 1.5rem" }}>
-                      <h2 style={{ textAlign:"center", fontSize:"2rem", fontWeight:800, marginBottom:"0.5rem" }}>Site Map</h2>h2>
-                      <p style={{ textAlign:"center", color:S.muted, marginBottom:"2.5rem" }}>Every page — at a glance.</p>p>
-                      <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(300px,1fr))", gap:"1.5rem" }}>
-                                <div style={{ background:S.card, border:`1px solid ${S.border}`, borderRadius:"20px", padding:"2rem" }}>
-                                            <p style={{ color:S.gold, fontWeight:700, fontSize:"0.75rem", letterSpacing:"0.08em", marginBottom:"1.25rem" }}>MAIN PLATFORM</p>
-                                  {[{i:"🏠",l:"Home / Dashboard",h:"/"},{i:"👑",l:"Membership",h:"/membership"},{i:"🔧",l:"Tool Library",h:"/tools"},{i:"📚",l:"Librar</div>
+      {/* FEATURES */}
+      <section style={{ padding:"4rem 1.5rem 5rem", maxWidth:"1100px", margin:"0 auto" }}>
+        <h2 style={{ textAlign:"center", fontSize:"2rem", fontWeight:800, marginBottom:"0.75rem" }}>Everything You Need</h2>
+        <p style={{ textAlign:"center", color:S.text, marginBottom:"3rem" }}>Six powerful modules working together for a seamless tool-sharing experience.</p>
+        <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(300px,1fr))", gap:"1.25rem" }}>
+          {[
+            { icon:"🔧", title:"Tool Library", desc:"Browse and list thousands of tools across dozens of categories. Power tools, gardening, plumbing, and more.", bullets:["Smart search & filters","Tool condition ratings","Damage deposit protection"], href:"/tools" },
+            { icon:"🐝", title:"HiveMatch™", desc:"Our smart matching engine connects borrowers with the nearest, best-rated tool owners automatically.", bullets:["AI-powered recommendations","Location-based matching","Instant availability checks"], href:"/hivematch" },
+            { icon:"📚", title:"Library Hub", desc:"Community-curated lists, how-to guides, and expert tips for getting the most out of every tool.", bullets:["Project guides & tutorials","Tool maintenance tips","Community reviews"], href:"/library" },
+            { icon:"👑", title:"Membership", desc:"Upgrade your experience with ToolHive Pro or Business plans for higher earning rates and premium features.", bullets:["Higher earn rates","Priority listing","Advanced analytics"], href:"/membership" },
+            { icon:"👕", title:"HiveHaul Merch", desc:"Show off your love for the community with branded gear. Every purchase supports the platform.", bullets:["Branded apparel & gear","Community badge system","Limited edition drops"], href:"/merch" },
+            { icon:"💳", title:"ToolToken Wallet", desc:"Earn, hold, and spend ToolTokens (TT) — the platform currency that powers every transaction.", bullets:["Real-time balance","Transaction history","Secure transfers"], href:"/wallet" },
+          ].map(f=>(
+            <div key={f.title} style={{ background:S.card, border:`1px solid ${S.border}`, borderRadius:"16px", padding:"1.75rem 1.5rem" }}>
+              <div style={{ fontSize:"2rem", marginBottom:"0.75rem" }}>{f.icon}</div>
+              <h3 style={{ fontWeight:700, marginBottom:"0.5rem" }}>{f.title}</h3>
+              <p style={{ color:S.text, fontSize:"0.875rem", marginBottom:"1rem", lineHeight:1.6 }}>{f.desc}</p>
+              <div style={{ marginBottom:"1.25rem" }}>
+                {f.bullets.map(b=><div key={b} style={{ color:S.text, fontSize:"0.8rem", marginBottom:"0.3rem" }}>✓ {b}</div>)}
+              </div>
+              <Link href={f.href} style={{ color:S.gold, fontSize:"0.875rem", textDecoration:"none", fontWeight:600 }}>Explore →</Link>
+            </div>
+          ))}
+        </div>
+      </section>
 
+      {/* TOKEN ECONOMY */}
+      <section id="tokens" style={{ maxWidth:"800px", margin:"0 auto 5rem", padding:"0 1.5rem" }}>
+        <div style={{ background:"linear-gradient(135deg,#1E2D40,#111F33)", border:`1px solid ${S.gold}44`, borderRadius:"24px", padding:"3rem 2rem", textAlign:"center" }}>
+          <div style={{ fontSize:"2.5rem", marginBottom:"1rem" }}>🪙</div>
+          <h2 style={{ fontSize:"1.75rem", fontWeight:800, color:S.gold, marginBottom:"0.75rem" }}>ToolToken Economy</h2>
+          <p style={{ color:S.text, maxWidth:"500px", margin:"0 auto 2.5rem", lineHeight:1.65 }}>
+            ToolTokens (TT) power everything on the platform. Buy, earn, and spend tokens to rent tools, unlock features, and reward great owners.
+          </p>
+          <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:"1rem", marginBottom:"2rem" }}>
+            {[{i:"📈",v:"$1.25 / TT",l:"Buy Rate"},{i:"📉",v:"$0.75 / TT",l:"Sell Rate"},{i:"⚡",v:"Up to 10 TT/day",l:"Earn Rate"}].map(t=>(
+              <div key={t.l} style={{ background:S.bg, borderRadius:"12px", padding:"1.25rem 0.5rem" }}>
+                <div style={{ fontSize:"1.5rem", marginBottom:"0.4rem" }}>{t.i}</div>
+                <div style={{ color:S.gold, fontWeight:700 }}>{t.v}</div>
+                <div style={{ color:S.muted, fontSize:"0.75rem", marginTop:"0.25rem" }}>{t.l}</div>
+              </div>
+            ))}
+          </div>
+          <Link href="/shop" style={{ background:S.gold, color:S.bg, padding:"0.75rem 2.5rem", borderRadius:"10px", fontWeight:700, textDecoration:"none", display:"inline-block" }}>
+            Visit Token Shop
+          </Link>
+        </div>
+      </section>
 
+      {/* SITE MAP */}
+      <section id="sitemap" style={{ maxWidth:"1000px", margin:"0 auto 5rem", padding:"0 1.5rem" }}>
+        <h2 style={{ textAlign:"center", fontSize:"1.75rem", fontWeight:800, marginBottom:"2rem" }}>Explore ToolHive™</h2>
+        <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(220px,1fr))", gap:"1.5rem" }}>
+          <div style={{ background:S.card, border:`1px solid ${S.border}`, borderRadius:"16px", padding:"1.5rem" }}>
+            <h3 style={{ color:S.gold, fontWeight:700, marginBottom:"1rem", fontSize:"0.9rem", textTransform:"uppercase", letterSpacing:"0.05em" }}>Main Platform</h3>
+            {[{i:"🔧",l:"Tool Library",h:"/tools"},{i:"🐝",l:"HiveMatch™",h:"/hivematch"},{i:"📚",l:"Library Hub",h:"/library"},{i:"👑",l:"Membership",h:"/membership"},{i:"👕",l:"HiveHaul Merch",h:"/merch"}].map(p=>(
+              <div key={p.h} style={{ display:"flex", justifyContent:"space-between", padding:"0.4rem 0", color:S.text, fontSize:"0.85rem" }}>
+                <span>{p.i} {p.l}</span><a href={p.h} style={{ color:S.muted, fontSize:"0.8rem", textDecoration:"none" }}>{p.h}</a>
+              </div>
+            ))}
+          </div>
+          <div style={{ background:S.card, border:`1px solid ${S.border}`, borderRadius:"16px", padding:"1.5rem" }}>
+            <h3 style={{ color:S.gold, fontWeight:700, marginBottom:"1rem", fontSize:"0.9rem", textTransform:"uppercase", letterSpacing:"0.05em" }}>Tokens & Info</h3>
+            {[{i:"💳",l:"Token Wallet",h:"/wallet"},{i:"🪙",l:"Token Shop",h:"/shop"},{i:"🏢",l:"About Us",h:"/about"},{i:"📬",l:"Contact",h:"/contact"},{i:"📋",l:"Policies",h:"/policies"},{i:"🌐",l:"Landing Page",h:"/landing"}].map(p=>(
+              <div key={p.h} style={{ display:"flex", justifyContent:"space-between", padding:"0.4rem 0", color:S.text, fontSize:"0.85rem" }}>
+                <span>{p.i} {p.l}</span><a href={p.h} style={{ color:S.muted, fontSize:"0.8rem", textDecoration:"none" }}>{p.h}</a>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
 
-          {[{i:"🏠",l:"Home",h:"/"},{i:"👑",l:"Membership",h:"/membership"},{i:"🔧",l:"Tool Library",h:"/tools"},{i:"📚",l:"Library Hub",h:"/library"},{i:"🐝",l:"HiveMatch",h:"/hivematch"},{i:"👕",l:"HiveHaul Merch",h:"/merch"}].map(p=>(
-                          <div key={p.h} style={{ display:"flex", justifyContent:"space-between", padding:"0.4rem 0", color:S.text, fontSize:"0.85rem" }}>
-                                            <span>{p.i} {p.l}</span>span><a href={p.h} style={{ color:S.muted, fontSize:"0.8rem", textDecoration:"none" }}>{p.h}</a>a>
-                          </div>div>
-                        ))}
-                                    </div>
-                                            </span>
+      {/* CTA */}
+      <section style={{ textAlign:"center", padding:"4rem 1.5rem 5rem", maxWidth:"700px", margin:"0 auto" }}>
+        <h2 style={{ fontSize:"2.25rem", fontWeight:900, marginBottom:"1rem" }}>Ready to Join the Hive?</h2>
+        <p style={{ color:S.muted, marginBottom:"2rem" }}>Sign up free and start browsing tools in your area today. No credit card required.</p>
+        <Link href="/" style={{ background:S.gold, color:S.bg, padding:"1rem 3rem", borderRadius:"14px", fontWeight:700, textDecoration:"none", fontSize:"1.1rem", display:"inline-block" }}>
+          Join ToolHive™ Free
+        </Link>
+      </section>
+
+      {/* FOOTER */}
+      <footer style={{ textAlign:"center", padding:"1.5rem", borderTop:`1px solid ${S.border}`, color:S.muted, fontSize:"0.85rem" }}>
+        © 2026 ToolHive™ — Built for builders, by builders.
+      </footer>
+
+    </div>
+  );
+}

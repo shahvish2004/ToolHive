@@ -206,6 +206,7 @@ label.flabel{font-size:9px;font-weight:700;letter-spacing:1.3px;text-transform:u
   <form id="cForm" action="https://formspree.io/f/mjglgjkq" method="POST" enctype="multipart/form-data">
     <input type="hidden" name="_subject" value="HiveHaul Customer Agreement - New Booking">
     <input type="hidden" name="form_type" value="Customer Intake">
+    <input type="hidden" name="estimated_price" id="estimated_price" value="">
 
     <div class="section">
       <div class="sec-label"><div class="sec-num">1</div><div class="sec-title">Your Information</div><div class="sec-line"></div></div>
@@ -239,14 +240,64 @@ label.flabel{font-size:9px;font-weight:700;letter-spacing:1.3px;text-transform:u
 
     <div class="section">
       <div class="sec-label"><div class="sec-num">3</div><div class="sec-title">Access, Labour &amp; Handling Details</div><div class="sec-line"></div></div>
+
+      <div class="row">
+        <div class="field">
+          <label class="flabel">Pickup Building Type *</label>
+          <select name="pickup_building_type" id="pickup_building_type" required>
+            <option value="house">House</option>
+            <option value="condo_apartment">Condo / Apartment</option>
+            <option value="commercial_retail">Commercial / Retail Store</option>
+            <option value="storage_unit">Storage Unit</option>
+            <option value="warehouse_loading_dock">Warehouse / Loading Dock</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+        <div class="field">
+          <label class="flabel">Delivery Building Type *</label>
+          <select name="delivery_building_type" id="delivery_building_type" required>
+            <option value="house">House</option>
+            <option value="condo_apartment">Condo / Apartment</option>
+            <option value="commercial_retail">Commercial / Retail Store</option>
+            <option value="storage_unit">Storage Unit</option>
+            <option value="warehouse_loading_dock">Warehouse / Loading Dock</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+      </div>
+
       <div class="row">
         <div class="field">
           <label class="flabel">Pickup Assistance *</label>
-          <select name="pickup_assistance" id="pickup_assist" onchange="handlePickupAssistChange()" required>
-            <option value="yes">Assistance needed at pickup</option>
-            <option value="no">Client will bring item to curb / pickup point</option>
+          <select name="pickup_assistance" id="pickup_assist" onchange="handleAccessLogic()" required>
+            <option value="no">No — store/client will load item</option>
+            <option value="curb">Yes — curb / pickup-point assistance</option>
+            <option value="inside">Yes — inside property pickup</option>
+            <option value="unknown">Not sure</option>
           </select>
         </div>
+        <div class="field">
+          <label class="flabel">Drop-Off Assistance *</label>
+          <select name="dropoff_assistance" id="dropoff_assist" onchange="handleAccessLogic()" required>
+            <option value="no">No — curb / drop-off only</option>
+            <option value="curb">Yes — curb / drop-off-point assistance</option>
+            <option value="inside">Yes — inside property delivery</option>
+            <option value="unknown">Not sure</option>
+          </select>
+        </div>
+        <div class="field">
+          <label class="flabel">Property Entry Required?</label>
+          <select name="property_entry_required" id="property_entry" onchange="handleAccessLogic()">
+            <option value="none">No property entry</option>
+            <option value="pickup">Pickup only</option>
+            <option value="delivery">Delivery only</option>
+            <option value="both">Both pickup and delivery</option>
+            <option value="unknown">Not sure</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="row">
         <div class="field">
           <label class="flabel">Item Weight *</label>
           <select name="item_weight_level" id="labour_level" onchange="calculateEstimate()" required>
@@ -264,18 +315,19 @@ label.flabel{font-size:9px;font-weight:700;letter-spacing:1.3px;text-transform:u
             <option value="3">3+ helpers</option>
           </select>
         </div>
-      </div>
-      <div class="row">
         <div class="field">
           <label class="flabel">Labour Add-On</label>
           <select name="labour_addon" id="labour_addon" onchange="toggleLabourWaiver(); calculateEstimate();">
             <option value="none">No labour beyond curb-to-curb</option>
-            <option value="light">Light labour</option>
-            <option value="medium">Medium labour</option>
-            <option value="heavy">Heavy labour</option>
+            <option value="light">Request light labour (if available)</option>
+            <option value="medium">Request medium labour (if available)</option>
+            <option value="heavy">Request heavy labour (if available)</option>
             <option value="not_sure">Not sure</option>
           </select>
         </div>
+      </div>
+
+      <div class="row">
         <div class="field">
           <label class="flabel">Elevator Access *</label>
           <select name="elevator_access" id="elevator" onchange="calculateEstimate()" required>
@@ -288,15 +340,14 @@ label.flabel{font-size:9px;font-weight:700;letter-spacing:1.3px;text-transform:u
         <div class="field">
           <label class="flabel">Floor Level *</label>
           <select name="floor_level" id="floor" onchange="calculateEstimate()" required>
-            <option value="1">Ground floor</option>
+            <option value="0">Basement</option>
+            <option value="1" selected>Ground floor</option>
             <option value="2">2nd floor</option>
             <option value="3">3rd floor</option>
-            <option value="4">4th floor+</option>
-            <option value="0">Basement</option>
+            <option value="4">4th floor</option>
+            <option value="5">5th floor+</option>
           </select>
         </div>
-      </div>
-      <div class="row">
         <div class="field">
           <label class="flabel">Stairs Involved?</label>
           <select name="stairs_involved" id="stairs_involved" onchange="calculateEstimate()">
@@ -307,9 +358,12 @@ label.flabel{font-size:9px;font-weight:700;letter-spacing:1.3px;text-transform:u
             <option value="unknown">Not sure</option>
           </select>
         </div>
+      </div>
+
+      <div class="row">
         <div class="field">
           <label class="flabel">Can Item Separate?</label>
-          <select name="item_separable">
+          <select name="item_separable" id="item_separable">
             <option value="yes">Yes</option>
             <option value="no">No</option>
             <option value="unknown">Not sure</option>
@@ -323,11 +377,9 @@ label.flabel{font-size:9px;font-weight:700;letter-spacing:1.3px;text-transform:u
             <option value="unknown">Not sure</option>
           </select>
         </div>
-      </div>
-      <div class="row">
         <div class="field">
           <label class="flabel">Parking / Loading Access</label>
-          <select name="parking_access">
+          <select name="parking_access" id="parking_access">
             <option value="driveway">Driveway</option>
             <option value="street">Street parking</option>
             <option value="condo_loading">Condo loading area</option>
@@ -335,15 +387,33 @@ label.flabel{font-size:9px;font-weight:700;letter-spacing:1.3px;text-transform:u
             <option value="unknown">Not sure</option>
           </select>
         </div>
+      </div>
+
+      <div class="row">
         <div class="field w2">
           <label class="flabel">Client Photos (optional)</label>
           <input type="file" name="client_photos" accept="image/*" multiple>
         </div>
       </div>
+
+      <div id="smartWarning" class="terms-box" style="display:none;margin-top:10px;border-color:var(--amber);background:var(--amber-pale);">
+        <div class="term-item"><div class="term-num">!</div><div>
+          <div class="term-title">Review Required</div>
+          <div class="term-body" id="smartWarningText">This request may require additional labour/time. HiveHaul™ will review and confirm pricing before booking.</div>
+        </div></div>
+      </div>
+
+      <div class="terms-box" style="margin-top:10px;">
+        <div class="term-item"><div class="term-num">i</div><div>
+          <div class="term-title">Access Pricing Note</div>
+          <div class="term-body">Floors accessed by elevator are generally standard. Stairs, basement levels, inside-property pickup/delivery, long walks, tight access, or changed job conditions may require additional time and may change the final quote.</div>
+        </div></div>
+      </div>
+
       <div class="terms-box" id="labourWaiverBox" style="display:none;margin-top:10px;">
         <div class="term-item"><div class="term-num">!</div><div>
           <div class="term-title">Property Entry / Labour Waiver</div>
-          <div class="term-body">HiveHaul&#x2122; standard service is curb-to-curb. If labour requires entering a property, stairs, elevators, hallways, driveways, garages, yards, or other access areas, customer confirms authority to allow access. Labour add-ons may be billed hourly and may increase the final total depending on time, weight, access conditions, and safety. HiveHaul&#x2122; may refuse unsafe lifting, oversized items, difficult access, or work that may cause damage or injury.</div>
+          <div class="term-body">HiveHaul&#x2122; standard service is curb-to-curb. Labour assistance is limited and may be provided only if available and confirmed in advance. If labour requires entering a property, stairs, elevators, hallways, driveways, garages, yards, or other access areas, customer confirms authority to allow access. Labour add-ons may be billed hourly and may increase the final total depending on time, weight, access conditions, and safety. HiveHaul&#x2122; may refuse unsafe lifting, oversized items, difficult access, or work that may cause damage or injury.</div>
         </div></div>
       </div>
     </div>
@@ -408,7 +478,8 @@ label.flabel{font-size:9px;font-weight:700;letter-spacing:1.3px;text-transform:u
         <label class="check-item"><input type="checkbox" name="chk7" value="yes" required><div class="chk-box"></div>Delivery address is accessible by a full-size pickup truck</label>
         <label class="check-item"><input type="checkbox" name="chk8" value="yes" required><div class="chk-box"></div>I understand balance is due at delivery before offloading and I accept full cargo risk</label>
         <label class="check-item"><input type="checkbox" name="deposit_acknowledged" value="yes" required><div class="chk-box"></div>I understand a booking deposit is required after quote approval to confirm my time slot</label>
-        <label class="check-item" id="labourWaiverCheck" style="display:none;"><input type="checkbox" name="property_entry_waiver_accepted" value="yes"><div class="chk-box"></div>I agree to the property entry and labour waiver if labour beyond curb-to-curb is requested</label>
+        <label class="check-item"><input type="checkbox" name="scope_change_acknowledged" value="yes" required><div class="chk-box"></div>I understand that changes to access, labour, floor level, item weight, or job scope may change the quote or result in cancellation</label>
+        <label class="check-item" id="labourWaiverCheck" style="display:none;"><input type="checkbox" name="property_entry_waiver_accepted" value="yes"><div class="chk-box"></div>I understand labour is not guaranteed and agree to the property entry/labour waiver if labour beyond curb-to-curb is requested and confirmed</label>
       </div>
     </div>
 
@@ -617,65 +688,125 @@ const HIVEHAUL_CHECKBOX_LABELS = {
   deposit_acknowledged: 'Booking deposit required after quote approval',
   property_entry_waiver_accepted: 'Property entry / labour waiver accepted'
 };
+function getSelectValue(id, fallback=''){
+  return document.getElementById(id)?.value || fallback;
+}
+function stairLevels(floor){
+  if(floor === 0) return 1; // basement counts as one level
+  return Math.max(floor - 1, 0);
+}
 function calculateEstimate(){
-  const labourLevel=document.getElementById('labour_level')?.value || 'medium';
-  const helpersRaw=document.getElementById('helpers')?.value || '2';
+  const labourLevel=getSelectValue('labour_level','medium');
+  const helpersRaw=getSelectValue('helpers','2');
   const helpers=helpersRaw==='na' ? 0 : parseInt(helpersRaw,10);
-  const pickupAssist=document.getElementById('pickup_assist')?.value || 'yes';
-  const elevator=document.getElementById('elevator')?.value || 'no';
-  const floor=parseInt(document.getElementById('floor')?.value || '1',10);
-  const tight=document.getElementById('tight_access')?.value || 'no';
-  const stairsInvolved=document.getElementById('stairs_involved')?.value || 'no';
+  const pickupAssist=getSelectValue('pickup_assist','no');
+  const dropoffAssist=getSelectValue('dropoff_assist','no');
+  const propertyEntry=getSelectValue('property_entry','none');
+  const elevator=getSelectValue('elevator','no');
+  const floor=parseInt(getSelectValue('floor','1'),10);
+  const tight=getSelectValue('tight_access','no');
+  const stairsInvolved=getSelectValue('stairs_involved','no');
+
   let transport=80;
   let rate=60;
   if(labourLevel==='na') rate=0;
   if(labourLevel==='light') rate=45;
   if(labourLevel==='medium' || labourLevel==='unknown') rate=60;
   if(labourLevel==='heavy') rate=70;
-  let labour=rate*helpers;
-  if(pickupAssist==='no') labour*=0.75;
+
+  let labourBlocks=0;
+  if(pickupAssist && pickupAssist!=='no') labourBlocks+=1;
+  if(dropoffAssist && dropoffAssist!=='no') labourBlocks+=1;
+  if(propertyEntry==='pickup' || propertyEntry==='delivery') labourBlocks=Math.max(labourBlocks,1);
+  if(propertyEntry==='both') labourBlocks=Math.max(labourBlocks,2);
+
+  let labour=rate*helpers*labourBlocks;
+
   let adjustment=0;
-  if((elevator==='no' || stairsInvolved!=='no') && floor>=2) adjustment+=30;
+  if(propertyEntry==='pickup' || propertyEntry==='delivery') adjustment+=20;
+  if(propertyEntry==='both') adjustment+=40;
+
+  // Elevator floors are generally standard. Stairs are charged by level, basement included.
+  if(stairsInvolved!=='no'){
+    const levels=Math.max(stairLevels(floor),1);
+    const sides = stairsInvolved==='both' ? 2 : 1;
+    adjustment += levels * 15 * sides;
+  }
+  if((elevator==='no' || elevator==='unknown') && stairsInvolved==='unknown') adjustment+=30;
   if(tight==='yes' || tight==='unknown') adjustment+=20;
+
   const total=Math.round(transport+labour+adjustment);
   const est=document.getElementById('estimate');
   const hidden=document.getElementById('estimated_price');
   if(est) est.textContent='$'+total;
   if(hidden) hidden.value=String(total);
+  updateSmartWarnings();
 }
 
-function handlePickupAssistChange(){
-  const pickup=document.getElementById('pickup_assist')?.value || 'yes';
+function setSelectOptions(select, options){
+  select.innerHTML = options.map(o => `<option value="${o.value}"${o.selected?' selected':''}>${o.label}</option>`).join('');
+}
+function handleAccessLogic(){
+  const pickup=getSelectValue('pickup_assist','no');
+  const dropoff=getSelectValue('dropoff_assist','no');
+  const propertyEntry=getSelectValue('property_entry','none');
   const weight=document.getElementById('labour_level');
   const helpers=document.getElementById('helpers');
-  if(!weight || !helpers){calculateEstimate();return;}
+  const labour=document.getElementById('labour_addon');
+  if(!weight || !helpers || !labour){calculateEstimate();return;}
 
-  if(pickup==='no'){
-    weight.innerHTML=`<option value="na">N/A</option>`;
-    helpers.innerHTML=`<option value="na">N/A</option>`;
-    weight.disabled=true;
+  const noLabourNeeded = pickup==='no' && dropoff==='no' && propertyEntry==='none';
+  if(noLabourNeeded){
+    setSelectOptions(helpers,[{value:'na',label:'N/A',selected:true}]);
+    setSelectOptions(labour,[{value:'none',label:'No labour beyond curb-to-curb',selected:true}]);
     helpers.disabled=true;
+    labour.disabled=true;
   }else{
-    weight.innerHTML=`
-      <option value="light">Light — 1 person lift</option>
-      <option value="medium" selected>Medium — 2 person lift</option>
-      <option value="heavy">Heavy — extra care / effort</option>
-      <option value="unknown">Not sure</option>
-    `;
-    helpers.innerHTML=`
-      <option value="1">1 helper</option>
-      <option value="2" selected>2 helpers</option>
-      <option value="3">3+ helpers</option>
-    `;
-    weight.disabled=false;
+    setSelectOptions(helpers,[
+      {value:'1',label:'1 helper'},
+      {value:'2',label:'2 helpers',selected:true},
+      {value:'3',label:'3+ helpers'}
+    ]);
+    setSelectOptions(labour,[
+      {value:'none',label:'No labour beyond curb-to-curb'},
+      {value:'light',label:'Request light labour (if available)'},
+      {value:'medium',label:'Request medium labour (if available)',selected:true},
+      {value:'heavy',label:'Request heavy labour (if available)'},
+      {value:'not_sure',label:'Not sure'}
+    ]);
     helpers.disabled=false;
+    labour.disabled=false;
   }
+  toggleLabourWaiver();
   calculateEstimate();
 }
-
+function updateSmartWarnings(){
+  const warnings=[];
+  const pickup=getSelectValue('pickup_assist','no');
+  const dropoff=getSelectValue('dropoff_assist','no');
+  const propertyEntry=getSelectValue('property_entry','none');
+  const stairs=getSelectValue('stairs_involved','no');
+  const elevator=getSelectValue('elevator','no');
+  const weight=getSelectValue('labour_level','medium');
+  const tight=getSelectValue('tight_access','no');
+  if(pickup==='inside' || dropoff==='inside' || propertyEntry!=='none') warnings.push('Inside-property pickup/delivery may require additional labour and must be confirmed.');
+  if(stairs!=='no') warnings.push('Stairs, including basement levels, may add charges based on each level.');
+  if(elevator==='unknown') warnings.push('Unknown elevator/access conditions may change the quote after review.');
+  if(weight==='heavy' || weight==='unknown') warnings.push('Heavy or unclear item weight may require 2+ helpers and extra handling time.');
+  if(tight==='yes' || tight==='unknown') warnings.push('Tight access, narrow halls, or sharp turns may change the quote after review.');
+  const box=document.getElementById('smartWarning');
+  const text=document.getElementById('smartWarningText');
+  if(box && text){
+    if(warnings.length){box.style.display='block'; text.innerHTML=warnings.join('<br>');}
+    else{box.style.display='none'; text.textContent='';}
+  }
+}
 function toggleLabourWaiver(){
-  const labour=document.getElementById('labour_addon')?.value || 'none';
-  const show=labour && labour!=='none';
+  const labour=getSelectValue('labour_addon','none');
+  const propertyEntry=getSelectValue('property_entry','none');
+  const pickup=getSelectValue('pickup_assist','no');
+  const dropoff=getSelectValue('dropoff_assist','no');
+  const show=(labour && labour!=='none') || propertyEntry!=='none' || pickup==='inside' || dropoff==='inside';
   const box=document.getElementById('labourWaiverBox');
   const chkLabel=document.getElementById('labourWaiverCheck');
   const chk=chkLabel?.querySelector('input');
@@ -692,7 +823,7 @@ function updateAcknowledgementLabels(){
   const hidden=document.getElementById('acknowledgement_labels');
   if(hidden) hidden.value=picked.join(' | ');
 }
-window.addEventListener('DOMContentLoaded',()=>{handlePickupAssistChange();toggleLabourWaiver();calculateEstimate();});
+window.addEventListener('DOMContentLoaded',()=>{handleAccessLogic();toggleLabourWaiver();calculateEstimate();});
 
 const pds={};
 function mkPad(id,phId,col){
@@ -715,7 +846,78 @@ function clr(id,phId){const p=pds[id];if(!p)return;p.x.clearRect(0,0,p.c.width,p
 function calc(){const b=parseFloat(document.getElementById('bR').value)||0,k=parseFloat(document.getElementById('kR').value)||0,km=parseFloat(document.getElementById('aKm').value)||0,l=parseFloat(document.getElementById('lR').value)||0,m=parseFloat(document.getElementById('mR').value)||0,t=b+Math.max(0,km-10)*k+l+m;document.getElementById('tot').value=t.toFixed(2);document.getElementById('hTot').value=t.toFixed(2);calcBal();}
 function calcBal(){const t=parseFloat(document.getElementById('tot').value)||0,a=parseFloat(document.getElementById('adv').value)||0;document.getElementById('bal').value=Math.max(0,t-a).toFixed(2);}
 document.getElementById('tot').addEventListener('input',calcBal);
-document.getElementById('cForm').addEventListener('submit',function(e){toggleLabourWaiver();calculateEstimate();updateAcknowledgementLabels();if(!pds['sigC'].hs){e.preventDefault();alert('Please add your signature.');return;}document.getElementById('cSigD').value=pds['sigC'].c.toDataURL();const b=document.getElementById('cBtn');b.textContent='Submitting...';b.disabled=true;setTimeout(()=>{document.getElementById('cOK').style.display='block';b.style.display='none';},1200);});
+function checked(name){return !!document.querySelector(`#cForm input[name="${name}"]`)?.checked;}
+function getFormValue(form, name){return form.elements[name]?.value || '';}
+function buildHiveHaulRequestPayload(form){
+  updateAcknowledgementLabels();
+  const ack = Object.keys(HIVEHAUL_CHECKBOX_LABELS)
+    .filter(name => checked(name))
+    .map(name => HIVEHAUL_CHECKBOX_LABELS[name]);
+  if(checked('deposit_acknowledged')) ack.push('Booking deposit required after quote approval');
+  if(checked('scope_change_acknowledged')) ack.push('Scope/access/labour changes may change quote or result in cancellation');
+  if(checked('property_entry_waiver_accepted')) ack.push('Property entry / labour waiver accepted');
+  return {
+    full_name: getFormValue(form,'customer_name'),
+    phone: getFormValue(form,'customer_phone'),
+    email: getFormValue(form,'customer_email'),
+    pickup_address: getFormValue(form,'pickup'),
+    dropoff_address: [getFormValue(form,'delivery1'), getFormValue(form,'delivery2')].filter(Boolean).join(' | '),
+    load_type: getFormValue(form,'haul_type'),
+    approx_dimensions: getFormValue(form,'items'),
+    approx_weight: getFormValue(form,'item_weight_level'),
+    preferred_date: getFormValue(form,'service_date'),
+    preferred_time: getFormValue(form,'service_time'),
+    customer_notes: getFormValue(form,'access_notes'),
+    pickup_assist: getFormValue(form,'pickup_assistance'),
+    dropoff_assist: getFormValue(form,'dropoff_assistance'),
+    pickup_building_type: getFormValue(form,'pickup_building_type'),
+    delivery_building_type: getFormValue(form,'delivery_building_type'),
+    property_entry_required: getFormValue(form,'property_entry_required'),
+    labour_level: getFormValue(form,'labour_addon'),
+    helpers_required: getFormValue(form,'helpers_required'),
+    elevator_access: getFormValue(form,'elevator_access'),
+    floor_level: getFormValue(form,'floor_level'),
+    stairs_involved: getFormValue(form,'stairs_involved'),
+    tight_access: getFormValue(form,'tight_access'),
+    parking_access: getFormValue(form,'parking_access'),
+    item_separable: getFormValue(form,'item_separable'),
+    estimated_price: Number(document.getElementById('estimated_price')?.value || 0) || null,
+    acknowledgements: ack,
+    chk1_secured_items: checked('chk1'),
+    chk2_fragile_wrapped: checked('chk2'),
+    chk3_pickup_manpower: checked('chk3'),
+    chk4_delivery_manpower: checked('chk4'),
+    chk5_client_photos: checked('chk5'),
+    chk6_legal_cargo: checked('chk6'),
+    chk7_truck_access: checked('chk7'),
+    chk8_payment_terms: checked('chk8'),
+    deposit_acknowledged: checked('deposit_acknowledged'),
+    scope_change_acknowledged: checked('scope_change_acknowledged'),
+    property_entry_waiver_accepted: checked('property_entry_waiver_accepted'),
+    status: 'New Request',
+    deposit_paid: false
+  };
+}
+document.getElementById('cForm').addEventListener('submit',async function(e){
+  e.preventDefault();
+  toggleLabourWaiver();calculateEstimate();updateAcknowledgementLabels();
+  if(!pds['sigC'].hs){alert('Please add your signature.');return;}
+  document.getElementById('cSigD').value=pds['sigC'].c.toDataURL();
+  const b=document.getElementById('cBtn');
+  b.textContent='Submitting...';b.disabled=true;
+  try{
+    const payload = buildHiveHaulRequestPayload(this);
+    const { error } = await supabaseClient.from('hivehaul_requests').insert([payload]);
+    if(error) throw error;
+    document.getElementById('cOK').style.display='block';
+    b.style.display='none';
+    this.reset();
+  }catch(err){
+    console.error(err);
+    alert('Submission failed. Please check Supabase URL/key, table columns, and INSERT policy.');
+    b.textContent='Submit Agreement';b.disabled=false;
+  }
+});
 document.getElementById('pForm').addEventListener('submit',function(){document.getElementById('pSigD').value=pds['sigP'].c.toDataURL();const b=document.getElementById('pBtn');b.textContent='Saving...';b.disabled=true;setTimeout(()=>{b.textContent='Saved and Sent';},1200);});
 function resetP(){if(!confirm('Clear for new job?'))return;document.getElementById('pForm').querySelectorAll('input:not([type=radio]),textarea,select').forEach(el=>{if(el.name==='driver')el.value='Vish Shah - HiveHaul Operator';else if(el.id==='bR')el.value='59.99';else if(el.id==='kR')el.value='1.25';else if(['lR','mR','adv'].includes(el.id))el.value='0';else if(el.id==='pDate')el.value=td;else if(el.id==='pST')el.value=nd;else if(el.tagName==='SELECT')el.selectedIndex=0;else el.value='';});document.querySelectorAll('#panel-provider input[type=radio],#panel-provider input[type=checkbox]').forEach(el=>el.checked=false);calc();clr('sigP','sigPph');const b=document.getElementById('pBtn');b.textContent='Save Job Record and Send Copy';b.disabled=false;}
 function shareMe(){const u=window.location.href;if(navigator.share)navigator.share({title:'HiveHaul Service Agreement',text:'Please fill out and sign before your haul.',url:u});else navigator.clipboard.writeText(u).then(()=>alert('Link copied! Send via text or email.'));}
@@ -793,11 +995,16 @@ async function loadJobs(){
 
         <div class="small">
           <strong>Access / Labour</strong><br>
+          <span class="pill">Pickup building: ${safe(job.pickup_building_type)}</span>
+          <span class="pill">Delivery building: ${safe(job.delivery_building_type)}</span>
           <span class="pill">Pickup assist: ${safe(job.pickup_assist)}</span>
+          <span class="pill">Drop-off assist: ${safe(job.dropoff_assist)}</span>
+          <span class="pill">Property entry: ${safe(job.property_entry_required)}</span>
           <span class="pill">Labour: ${safe(job.labour_level)}</span>
           <span class="pill">Helpers: ${safe(job.helpers_required)}</span>
           <span class="pill">Elevator: ${safe(job.elevator_access)}</span>
           <span class="pill">Floor: ${safe(job.floor_level)}</span>
+          <span class="pill">Stairs: ${safe(job.stairs_involved)}</span>
           <span class="pill">Tight access: ${safe(job.tight_access)}</span>
           <span class="pill">Parking: ${safe(job.parking_access)}</span>
         </div>
@@ -817,8 +1024,19 @@ async function loadJobs(){
 
         <label>Status</label>
         <select id="status-${job.id}">
-          ${["New Request","Approved - Awaiting Client","Denied","Deposit Pending","Deposit Paid","Booked","Assigned to Provider","In Progress","Completed","Completed - Payment Pending","Closed"].map(s => `<option ${job.status === s ? "selected" : ""}>${s}</option>`).join("")}
+          ${["New Request","Approved - Awaiting Client","Denied","Cancelled","Deposit Pending","Deposit Paid","Booked","Assigned to Provider","In Progress","Completed","Completed - Payment Pending","Closed"].map(s => `<option ${job.status === s ? "selected" : ""}>${s}</option>`).join("")}
         </select>
+
+        <label>Cancellation Reason</label>
+        <select id="cancel-reason-${job.id}">
+          ${["","Scope of work changed","Access conditions differ from request","Additional labour required","Booking not confirmed — deposit not received","Unable to proceed safely","Customer declined updated quote","Other"].map(r => `<option ${job.cancellation_reason === r ? "selected" : ""}>${r}</option>`).join("")}
+        </select>
+
+        <label>Cancellation / Customer Message</label>
+        <textarea id="cancel-notes-${job.id}" placeholder="Example: The job now requires inside-property service and additional labour beyond the original request.">${safe(job.cancellation_notes)}</textarea>
+
+        <label>Suggested Alternative Date/Time</label>
+        <input id="suggested-${job.id}" type="text" value="${safe(job.suggested_alternative)}" placeholder="Example: Tomorrow after 3 PM">
 
         <label>Manager Notes</label>
         <textarea id="notes-${job.id}" placeholder="Internal notes">${safe(job.manager_notes)}</textarea>
@@ -827,6 +1045,7 @@ async function loadJobs(){
           <button class="save" onclick="saveJob('${job.id}')">Save Updates</button>
           <button class="approve" onclick="approveJob('${job.id}')">Approve</button>
           <button class="deny" onclick="denyJob('${job.id}')">Deny</button>
+          <button class="deny" onclick="cancelJob('${job.id}')">Cancel Service</button>
         </div>
       </div>`;
   }).join("");
@@ -837,13 +1056,19 @@ async function saveJob(id){
   const deposit = Number(document.getElementById(`deposit-${id}`).value || 0);
   const status = document.getElementById(`status-${id}`).value;
   const notes = document.getElementById(`notes-${id}`).value;
+  const cancellation_reason = document.getElementById(`cancel-reason-${id}`)?.value || null;
+  const cancellation_notes = document.getElementById(`cancel-notes-${id}`)?.value || null;
+  const suggested_alternative = document.getElementById(`suggested-${id}`)?.value || null;
 
   const update = {
     quote_amount: quote || null,
     deposit_required: deposit || null,
     balance_due: quote ? Math.max(quote - deposit, 0) : null,
     status,
-    manager_notes: notes
+    manager_notes: notes,
+    cancellation_reason,
+    cancellation_notes,
+    suggested_alternative
   };
 
   const { error } = await supabaseClient
@@ -868,6 +1093,12 @@ async function approveJob(id){
 
 async function denyJob(id){
   document.getElementById(`status-${id}`).value = "Denied";
+  await saveJob(id);
+}
+async function cancelJob(id){
+  document.getElementById(`status-${id}`).value = "Cancelled";
+  const reason = document.getElementById(`cancel-reason-${id}`);
+  if(reason && !reason.value) reason.value = "Scope of work changed";
   await saveJob(id);
 }
 

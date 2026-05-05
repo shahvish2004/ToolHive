@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HiveHaul Manager Panel</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #111827;
+      color: white;
+      padding: 16px;
+    }
+
+    h1 {
+      color: #f59e0b;
+      margin-bottom: 16px;
+    }
+
+    .job {
+      background: #1f2937;
+      border: 1px solid #374151;
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+
+    .status {
+      color: #f59e0b;
+      font-weight: bold;
+    }
+
+    label {
+      display: block;
+      margin-top: 10px;
+      font-size: 13px;
+      color: #d1d5db;
+    }
+
+    input, textarea, select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 4px;
+      border-radius: 8px;
+      border: none;
+      box-sizing: border-box;
+    }
+
+    button {
+      margin-top: 10px;
+      padding: 11px 14px;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .approve { background: #f59e0b; color: #111827; }
+    .deny { background: #ef4444; color: white; }
+    .save { background: #10b981; color: white; }
+    .small { font-size: 13px; color: #d1d5db; line-height: 1.5; }
+  </style>
+</head>
+
+<body>
+  <h1>HiveHaul Manager Panel</h1>
+
+  <div id="jobs">Loading requests...</div>
+
+<script>
+const SUPABASE_URL = "https://jucyjfwrkakjtyfxzpbq.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp1Y3lqZndya2FranR5Znh6cGJxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwMjE2NTAsImV4cCI6MjA5MTU5NzY1MH0.zxcPkFBtAROQHCee37Xqj9YiiJWG7SxdySBI2bEc6y4";
+
+const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+async function loadJobs() {
+  const { data, error } = await supabaseClient
+    .from("hivehaul_requests")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    document.getElementById("jobs").innerHTML = "Failed to load jobs.";
+    console.error(error);
+    return;
+  }
+
+  document.getElementById("jobs").innerHTML = data.map(job => `
+    <div class="job">
+      <h2>${job.full_name || "No Name"}</h2>
+      <p class="status">${job.status || "New Request"}</p>
+
+      <p class="small">
+        📞 ${job.phone || ""}<br>
+        ✉️ ${job.email || ""}<br><br>
+        📍 Pickup: ${job.pickup_address || ""}<br>
+        📍 Drop-off: ${job.dropoff_address || ""}<br><br>
+        Load: ${job.load_type || ""}<br>
+        Weight: ${job.approx_weight || ""}<br>
+        Dimensions: ${job.approx_dimensions || ""}<br>
+        Pickup assist: ${job.pickup_assist || ""}<br>
+        Labour: ${job.labour_level || ""}<br>
+        Helpers: ${job.helpers_required || ""}<br>
+        Elevator: ${job.elevator_access || ""}<br>
+        Floor: ${job.floor_level || ""}<br>
+        Tight access: ${job.tight_access || ""}
+      </p>
+
+      <p class="small">
+        <strong>Acknowledgements:</strong><br>
+        ${(job.acknowledgements || []).map(a => "✔ " + a).join("<br>")}
+      </p>
+
+      <label>Quote Amount</label>
+      <input id="quote-${job.id}" type="number" value="${job.quote_amount || ""}" placeholder="Example: 200">
+
+      <label>Deposit Required</label>
+      <input id="deposit-${job.id}" type="number" value="${job.deposit_required || 30}">
+
+      <label>Manager Notes</label>
+      <textarea id="notes-${job.id}" placeholder="Internal notes">${job.manager_notes || ""}</textarea>
+
+      <label>Status</label>
+      <select id="status-${job.id}">
+        <option ${job.status === "New Request" ? "selected" : ""}>New Request</option>
+        <option ${job.status === "Approved - Awaiting Client" ? "selected" : ""}>Approved - Awaiting Client</option>
+        <option ${job.status === "Denied" ? "selected" : ""}>Denied</option>
+        <option ${job.status === "Deposit Pending" ? "selected" : ""}>Deposit Pending</option>
+        <option ${job.status === "Deposit Paid" ? "selected" : ""}>Deposit Paid</option>
+        <option ${job.status === "Booked" ? "selected" : ""}>Booked</option>
+        <option ${job.status === "Assigned to Provider" ? "selected" : ""}>Assigned to Provider</option>
+        <option ${job.status === "Completed" ? "selected" : ""}>Completed</option>
+        <option ${job.status === "Completed - Payment Pending" ? "selected" : ""}>Completed - Payment Pending</option>
+      </select>
+
+      <button class="save" onclick="saveJob('${job.id}')">Save Updates</button>
+      <button class="approve" onclick="approveJob('${job.id}')">Approve</button>
+      <button class="deny" onclick="denyJob('${job.id}')">Deny</button>
+    </div>
+  `).join("");
+}
+
+async function saveJob(id) {
+  const quote = Number(document.getElementById(`quote-${id}`).value || 0);
+  const deposit = Number(document.getElementById(`deposit-${id}`).value || 0);
+  const status = document.getElementById(`status-${id}`).value;
+  const notes = document.getElementById(`notes-${id}`).value;
+  
+
+  const { error } = await supabaseClient
+    .from("hivehaul_requests")
+    .update({
+      quote_amount: quote,
+      deposit_required: deposit,
+      balance_due: quote - deposit,
+      status,
+      manager_notes: notes
+    })
+    .eq("id", id);
+
+  if (error) {
+    alert("Save failed");
+    console.error(error);
+    return;
+  }
+
+  alert("Saved");
+  loadJobs();
+}
+
+async function approveJob(id) {
+  document.getElementById(`status-${id}`).value = "Approved - Awaiting Client";
+  await saveJob(id);
+}
+
+async function denyJob(id) {
+  document.getElementById(`status-${id}`).value = "Denied";
+  await saveJob(id);
+}
+
+loadJobs();
+</script>
+</body>
+</html>

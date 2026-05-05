@@ -141,9 +141,37 @@ label.flabel{font-size:9px;font-weight:700;letter-spacing:1.3px;text-transform:u
 .notes-box{background:rgba(255,255,255,0.03);border:1.5px solid rgba(255,255,255,0.08);border-radius:10px;padding:14px 16px;}
 @media print{.tab-bar,.ab,.no-print{display:none!important;}.page{box-shadow:none!important;}body{background:white;}.panel{display:block!important;}.panel-provider .page{background:white!important;color:var(--slate)!important;}}
 @media(max-width:580px){.page{margin:0;}.price-grid{grid-template-columns:1fr;}.row{flex-direction:column;gap:10px;}.field{min-width:100%;}.ab{justify-content:stretch;}.btn{justify-content:center;flex:1;}}
+
+/* Manager panel merged styles */
+.manager-view{--amber:#F59E0B;--dark:#111827;--card:#1f2937;--line:#374151;--muted:#d1d5db;--green:#10b981;--red:#ef4444;display:none;background:#111827;color:white;min-height:100vh;padding:16px;font-family:Arial,sans-serif;}
+.manager-view *{box-sizing:border-box;}
+.manager-view .wrap{max-width:980px;margin:0 auto;}
+.manager-view h1{color:var(--amber);margin:0 0 6px;font-size:28px;}
+.manager-view .sub{color:var(--muted);font-size:13px;margin-bottom:18px;}
+.manager-view .login,.manager-view .job{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:16px;box-shadow:0 10px 30px rgba(0,0,0,.18);}
+.manager-view .login{max-width:420px;margin:60px auto;}
+.manager-view .topbar{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-bottom:14px;}
+.manager-view .status{color:var(--amber);font-weight:bold;display:inline-block;margin:4px 0 10px;}
+.manager-view label{display:block;margin-top:10px;font-size:12px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.6px;}
+.manager-view input,.manager-view textarea,.manager-view select{width:100%;padding:11px;margin-top:5px;border-radius:10px;border:1px solid var(--line);background:#111827;color:white;box-sizing:border-box;}
+.manager-view textarea{min-height:74px;resize:vertical;}
+.manager-view button{margin-top:10px;padding:11px 14px;border:none;border-radius:10px;font-weight:bold;cursor:pointer;}
+.manager-view .approve{background:var(--amber);color:#111827;}
+.manager-view .deny{background:var(--red);color:white;}
+.manager-view .save{background:var(--green);color:white;}
+.manager-view .ghost{background:#374151;color:white;}
+.manager-view .small{font-size:13px;color:var(--muted);line-height:1.55;}
+.manager-view .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;}
+.manager-view .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px;}
+.manager-view .pill{display:inline-block;background:#111827;border:1px solid var(--line);border-radius:999px;padding:5px 9px;font-size:12px;color:var(--muted);margin:3px 4px 3px 0;}
+.manager-view .error{color:#fecaca;font-size:13px;margin-top:10px;display:none;}
+.manager-view #panel{display:none;}
+@media(max-width:720px){.manager-view .grid{grid-template-columns:1fr}.manager-view .actions button{flex:1}.manager-view .topbar{align-items:flex-start}}
+
 </style>
 </head>
 <body>
+<div id="clientOnly">
 <div class="tab-bar no-print">
   <button class="tab-btn active" onclick="switchTab('customer',this)">Customer Form</button>
   <button class="tab-btn" onclick="switchTab('provider',this)">Provider Sheet</button>
@@ -175,10 +203,9 @@ label.flabel{font-size:9px;font-weight:700;letter-spacing:1.3px;text-transform:u
     <div style="font-family:'DM Mono',monospace;font-size:13px;color:var(--amber);font-weight:600;">hivehaulca@gmail.com</div>
   </div>
   <div class="form-body">
-  <form id="cForm" action="https://formspree.io/f/mjglgjkq" method="POST">
+  <form id="cForm" action="https://formspree.io/f/mjglgjkq" method="POST" enctype="multipart/form-data">
     <input type="hidden" name="_subject" value="HiveHaul Customer Agreement - New Booking">
     <input type="hidden" name="form_type" value="Customer Intake">
-    <form onsubmit="submitHiveHaulForm(event)"></form>
 
     <div class="section">
       <div class="sec-label"><div class="sec-num">1</div><div class="sec-title">Your Information</div><div class="sec-line"></div></div>
@@ -211,49 +238,166 @@ label.flabel{font-size:9px;font-weight:700;letter-spacing:1.3px;text-transform:u
     </div>
 
     <div class="section">
-      <div class="sec-label"><div class="sec-num">3</div><div class="sec-title">Terms of Service &amp; Liability Waiver</div><div class="sec-line"></div></div>
-      <div class="terms-box">
-        <div class="term-item"><div class="term-num">1</div><div>
-          <div class="term-title">Curb-to-Curb Service Only</div>
-          <div class="term-body">HiveHaul&#x2122; provides <strong>curb-to-curb transport only.</strong> We pick up at the curbside at origin and drop at curbside at destination. We <strong>do not enter homes, buildings, or navigate stairs.</strong> Items must be fully curbside-ready at the scheduled arrival time. Delays caused by unprepared items may result in additional charges or rescheduling..</div>
-        </div></div>
-        <div class="term-item"><div class="term-num">2</div><div>
-          <div class="term-title">No Cargo Insurance &#x2014; Customer Bears Full Responsibility</div>
-          <div class="term-body">HiveHaul&#x2122; carries <strong>commercial auto insurance for the vehicle only</strong> &#x2014; no cargo or goods-in-transit insurance. <strong>All items are transported at the customer's sole risk and full responsibility.</strong> The customer is fully responsible for any loss, theft, or damage to cargo. HiveHaul&#x2122; accepts zero liability for cargo under any circumstances.
-            <span class="term-hl">Customer assumes 100% responsibility for all cargo.HiveHaul™ is not responsible for packing, wrapping, or securing items unless explicitly agreed upon in advance. Customer is responsible for ensuring items are safely prepared for transport. No claims of any kind may be made against HiveHaul&#x2122; for cargo damage, loss, or related issues.</span>
-          </div>
-        </div></div>
-        <div class="term-item"><div class="term-num">3</div><div>
-          <div class="term-title">Loading &amp; Damage &#x2014; Zero Liability</div>
-          <div class="term-body">Loading and unloading is done <strong>manually without mechanical equipment.</strong> HiveHaul&#x2122; accepts <strong>zero liability</strong> for scratches, dents, cracks, mechanical damage, screen damage, or damage from shifting in transit. Items <strong>must be properly packed, wrapped, and prepared</strong> by the customer before arrival.</div>
-        </div></div>
-        <div class="term-item"><div class="term-num">4</div><div>
-          <div class="term-title">Customer Must Provide Adequate Manpower</div>
-          <div class="term-body">The customer must have <strong>adequate manpower at both pickup and delivery curbsides</strong> to safely lift and move items. If a job cannot be completed safely due to lack of help, the service is considered rendered and <strong>full payment is due.</strong></div>
-        </div></div>
-        <div class="term-item"><div class="term-num">5</div><div>
-          <div class="term-title">No Items or Persons in the Vehicle Cabin &#x2014; Zero Exceptions</div>
-          <div class="term-body"><strong>No passengers, pets, or items are permitted inside the vehicle cab at any time.</strong> Only the HiveHaul&#x2122; driver may occupy the cabin. No exceptions.</div>
-        </div></div>
-        <div class="term-item"><div class="term-num">6</div><div>
-          <div class="term-title">Cargo Declaration &amp; Right of Inspection</div>
-          <div class="term-body">By signing, you <strong>declare all cargo is fully legal under Canadian federal and provincial law.</strong> No illegal drugs, controlled substances, firearms, stolen goods, or hazardous materials. HiveHaul&#x2122; <strong>reserves the right to inspect cargo at any time</strong> for safety and legal compliance. Prohibited items result in immediate service termination with no refund, and authorities may be notified. <strong>The customer bears full legal and financial responsibility for all cargo contents.</strong></div>
-        </div></div>
-        <div class="term-item"><div class="term-num">7</div><div>
-          <div class="term-title">Payment &amp; Cancellation</div>
-          <div class="term-body">A <strong>deposit is due at booking.</strong> Balance is due <strong>curbside at delivery, before offloading.</strong> Cancellations within 2 hours of start forfeit the deposit. No-shows forfeit the full deposit. Cancellations 24+ hours in advance receive a full refund.
-            <span class="term-hl">E-Transfer to <strong>hivehaulca@gmail.com</strong> or Cash only. Deposit at booking, balance curbside before offloading begins. Auto-deposit recommended.</span>
-          </div>
-        </div></div>
-        <div class="term-item"><div class="term-num">8</div><div>
-          <div class="term-title">Full Waiver &#x2014; Zero Liability for Cargo</div>
-          <div class="term-body">To the fullest extent permitted by Canadian law, <strong>HiveHaul&#x2122; and its operators accept zero liability for cargo damage, loss, or delays.</strong> The customer waives all rights to claims, chargebacks, or legal action against HiveHaul&#x2122; for cargo matters. Maximum liability of HiveHaul&#x2122; shall not exceed the service fee paid for that specific booking.</div>
+      <div class="sec-label"><div class="sec-num">3</div><div class="sec-title">Access, Labour &amp; Handling Details</div><div class="sec-line"></div></div>
+      <div class="row">
+        <div class="field">
+          <label class="flabel">Pickup Assistance *</label>
+          <select name="pickup_assistance" id="pickup_assist" onchange="handlePickupAssistChange()" required>
+            <option value="yes">Assistance needed at pickup</option>
+            <option value="no">Client will bring item to curb / pickup point</option>
+          </select>
+        </div>
+        <div class="field">
+          <label class="flabel">Item Weight *</label>
+          <select name="item_weight_level" id="labour_level" onchange="calculateEstimate()" required>
+            <option value="light">Light — 1 person lift</option>
+            <option value="medium" selected>Medium — 2 person lift</option>
+            <option value="heavy">Heavy — extra care / effort</option>
+            <option value="unknown">Not sure</option>
+          </select>
+        </div>
+        <div class="field">
+          <label class="flabel">Helpers Required *</label>
+          <select name="helpers_required" id="helpers" onchange="calculateEstimate()" required>
+            <option value="1">1 helper</option>
+            <option value="2" selected>2 helpers</option>
+            <option value="3">3+ helpers</option>
+          </select>
+        </div>
+      </div>
+      <div class="row">
+        <div class="field">
+          <label class="flabel">Labour Add-On</label>
+          <select name="labour_addon" id="labour_addon" onchange="toggleLabourWaiver(); calculateEstimate();">
+            <option value="none">No labour beyond curb-to-curb</option>
+            <option value="light">Light labour</option>
+            <option value="medium">Medium labour</option>
+            <option value="heavy">Heavy labour</option>
+            <option value="not_sure">Not sure</option>
+          </select>
+        </div>
+        <div class="field">
+          <label class="flabel">Elevator Access *</label>
+          <select name="elevator_access" id="elevator" onchange="calculateEstimate()" required>
+            <option value="no">No elevator</option>
+            <option value="yes">Regular elevator</option>
+            <option value="service">Service elevator available</option>
+            <option value="unknown">Not sure</option>
+          </select>
+        </div>
+        <div class="field">
+          <label class="flabel">Floor Level *</label>
+          <select name="floor_level" id="floor" onchange="calculateEstimate()" required>
+            <option value="1">Ground floor</option>
+            <option value="2">2nd floor</option>
+            <option value="3">3rd floor</option>
+            <option value="4">4th floor+</option>
+            <option value="0">Basement</option>
+          </select>
+        </div>
+      </div>
+      <div class="row">
+        <div class="field">
+          <label class="flabel">Stairs Involved?</label>
+          <select name="stairs_involved" id="stairs_involved" onchange="calculateEstimate()">
+            <option value="no">No</option>
+            <option value="pickup">Yes, at pickup</option>
+            <option value="delivery">Yes, at delivery</option>
+            <option value="both">Yes, both</option>
+            <option value="unknown">Not sure</option>
+          </select>
+        </div>
+        <div class="field">
+          <label class="flabel">Can Item Separate?</label>
+          <select name="item_separable">
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+            <option value="unknown">Not sure</option>
+          </select>
+        </div>
+        <div class="field">
+          <label class="flabel">Tight Access?</label>
+          <select name="tight_access" id="tight_access" onchange="calculateEstimate()">
+            <option value="no">No</option>
+            <option value="yes">Yes — narrow doors / halls / turns</option>
+            <option value="unknown">Not sure</option>
+          </select>
+        </div>
+      </div>
+      <div class="row">
+        <div class="field">
+          <label class="flabel">Parking / Loading Access</label>
+          <select name="parking_access">
+            <option value="driveway">Driveway</option>
+            <option value="street">Street parking</option>
+            <option value="condo_loading">Condo loading area</option>
+            <option value="loading_dock">Loading dock</option>
+            <option value="unknown">Not sure</option>
+          </select>
+        </div>
+        <div class="field w2">
+          <label class="flabel">Client Photos (optional)</label>
+          <input type="file" name="client_photos" accept="image/*" multiple>
+        </div>
+      </div>
+      <div class="terms-box" id="labourWaiverBox" style="display:none;margin-top:10px;">
+        <div class="term-item"><div class="term-num">!</div><div>
+          <div class="term-title">Property Entry / Labour Waiver</div>
+          <div class="term-body">HiveHaul&#x2122; standard service is curb-to-curb. If labour requires entering a property, stairs, elevators, hallways, driveways, garages, yards, or other access areas, customer confirms authority to allow access. Labour add-ons may be billed hourly and may increase the final total depending on time, weight, access conditions, and safety. HiveHaul&#x2122; may refuse unsafe lifting, oversized items, difficult access, or work that may cause damage or injury.</div>
         </div></div>
       </div>
     </div>
 
     <div class="section">
-      <div class="sec-label"><div class="sec-num">4</div><div class="sec-title">Pre-Haul Checklist</div><div class="sec-line"></div></div>
+      <div class="sec-label"><div class="sec-num">4</div><div class="sec-title">HiveHaul&#x2122; Service Terms</div><div class="sec-line"></div></div>
+      <div class="terms-box">
+        <div class="term-item"><div class="term-num">1</div><div>
+          <div class="term-title">Service Scope</div>
+          <div class="term-body">HiveHaul&#x2122; provides curb-to-curb transport services unless additional labour is requested and confirmed. If labour is requested, it may include lifting, loading, unloading, and placement of items as reasonably agreed before the job begins.</div>
+        </div></div>
+        <div class="term-item"><div class="term-num">2</div><div>
+          <div class="term-title">Client Responsibilities</div>
+          <div class="term-body">The client agrees to provide accurate details about item size, weight, pickup/drop-off access, stairs, elevators, parking/loading access, and any tight turns or limited access. Items must be safely prepared, secured, wrapped where needed, and ready for transport at the scheduled time.</div>
+        </div></div>
+        <div class="term-item"><div class="term-num">3</div><div>
+          <div class="term-title">Access, Safety &amp; Job Conditions</div>
+          <div class="term-body">Additional time, effort, helpers, or charges may apply if job conditions differ from the information provided. HiveHaul&#x2122; may refuse unsafe, impractical, illegal, oversized, or high-risk work. This includes unsafe lifting, restricted access, difficult stairs, narrow spaces, or conditions that may cause damage or injury.</div>
+        </div></div>
+        <div class="term-item"><div class="term-num">4</div><div>
+          <div class="term-title">Labour &amp; Property Entry</div>
+          <div class="term-body">HiveHaul&#x2122; standard service is curb-to-curb. If labour requires entering a property, building, elevator, hallway, garage, yard, driveway, or other access area, the client confirms they have authority to allow access. Labour add-ons may be billed hourly and may increase the final quote based on time, weight, access, and safety.</div>
+        </div></div>
+        <div class="term-item"><div class="term-num">5</div><div>
+          <div class="term-title">No Cabin Access</div>
+          <div class="term-body"><strong>No passengers, pets, or customer items are permitted inside the vehicle cab at any time.</strong> Only the HiveHaul&#x2122; driver/operator may occupy the cabin. No exceptions.</div>
+        </div></div>
+        <div class="term-item"><div class="term-num">6</div><div>
+          <div class="term-title">Legal Cargo Only</div>
+          <div class="term-body">The client confirms all cargo is legal under Canadian federal and provincial law. No illegal drugs, controlled substances, firearms, stolen goods, hazardous materials, or prohibited items are permitted. HiveHaul&#x2122; may refuse or terminate service if cargo appears unsafe, prohibited, or unlawful.</div>
+        </div></div>
+        <div class="term-item"><div class="term-num">7</div><div>
+          <div class="term-title">Pricing, Deposit &amp; Payment</div>
+          <div class="term-body">Quotes are based on the information provided at the time of request. Final pricing may be adjusted if job conditions differ materially from what was submitted. A deposit may be required to secure the booking. Remaining balance is due upon completion and before offloading, unless otherwise agreed in writing.
+            <span class="term-hl">Payment accepted by E-Transfer to <strong>hivehaulca@gmail.com</strong> or cash. Booking is confirmed only once the required deposit is received.</span>
+          </div>
+        </div></div>
+        <div class="term-item"><div class="term-num">8</div><div>
+          <div class="term-title">Photos, Item Condition &amp; Documentation</div>
+          <div class="term-body">Clients are encouraged to document item condition before pickup. HiveHaul&#x2122; may capture photos at pickup and delivery for record-keeping, safety, and dispute prevention. Pre-existing damage, wear, weak structure, loose parts, or poor packing is not the responsibility of HiveHaul&#x2122;.</div>
+        </div></div>
+        <div class="term-item"><div class="term-num">9</div><div>
+          <div class="term-title">Transport Risk &amp; Liability</div>
+          <div class="term-body">HiveHaul&#x2122; takes reasonable care when handling and transporting items. Transporting heavy, used, fragile, oversized, or poorly packed items involves inherent risk. HiveHaul&#x2122; does not provide full-value cargo insurance. Any claim must be supported by clear photos and job records from before pickup and after delivery.</div>
+        </div></div>
+        <div class="term-item"><div class="term-num">10</div><div>
+          <div class="term-title">Cancellations &amp; Changes</div>
+          <div class="term-body">Clients should provide reasonable notice for cancellations or changes. Deposits may be non-refundable depending on timing, scheduling impact, and whether the team has already been assigned or dispatched.</div>
+        </div></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="sec-label"><div class="sec-num">5</div><div class="sec-title">Pre-Haul Checklist</div><div class="sec-line"></div></div>
       <div class="check-grid">
         <label class="check-item"><input type="checkbox" name="chk1" value="yes" required><div class="chk-box"></div>All drawers, doors &amp; moving parts are locked or taped shut</label>
         <label class="check-item"><input type="checkbox" name="chk2" value="yes" required><div class="chk-box"></div>Fragile items, screens &amp; glass are wrapped before arrival</label>
@@ -263,16 +407,18 @@ label.flabel{font-size:9px;font-weight:700;letter-spacing:1.3px;text-transform:u
         <label class="check-item"><input type="checkbox" name="chk6" value="yes" required><div class="chk-box"></div>I confirm all cargo is legal under Canadian law</label>
         <label class="check-item"><input type="checkbox" name="chk7" value="yes" required><div class="chk-box"></div>Delivery address is accessible by a full-size pickup truck</label>
         <label class="check-item"><input type="checkbox" name="chk8" value="yes" required><div class="chk-box"></div>I understand balance is due at delivery before offloading and I accept full cargo risk</label>
+        <label class="check-item"><input type="checkbox" name="deposit_acknowledged" value="yes" required><div class="chk-box"></div>I understand a booking deposit is required after quote approval to confirm my time slot</label>
+        <label class="check-item" id="labourWaiverCheck" style="display:none;"><input type="checkbox" name="property_entry_waiver_accepted" value="yes"><div class="chk-box"></div>I agree to the property entry and labour waiver if labour beyond curb-to-curb is requested</label>
       </div>
     </div>
 
     <div class="section">
-      <div class="sec-label"><div class="sec-num">5</div><div class="sec-title">Agreement &amp; Signature</div><div class="sec-line"></div></div>
+      <div class="sec-label"><div class="sec-num">6</div><div class="sec-title">Agreement &amp; Signature</div><div class="sec-line"></div></div>
       <div class="agree-block" style="margin-bottom:18px;">
         <label class="agree-label">
           <input type="checkbox" name="agreed" value="yes" required>
           <div class="agree-box"></div>
-          <div class="agree-text"><strong>I have read, understood, and agree to all terms in this HiveHaul&#x2122; Service Agreement.</strong> I accept curb-to-curb service only, acknowledge HiveHaul&#x2122; carries no cargo insurance, confirm I bear 100% responsibility for all cargo, confirm all cargo is legal, agree to payment terms, and waive all rights to claims or chargebacks against HiveHaul&#x2122; for any cargo-related issues.</div>
+          <div class="agree-text"><strong>I have read, understood, and agree to the HiveHaul&#x2122; Service Terms.</strong> I confirm the information I provided is accurate, all cargo is legal, items are prepared for transport, access conditions have been disclosed, and I agree to the booking, payment, documentation, and transport-risk terms above.</div>
         </label>
       </div>
       <div class="row">
@@ -285,6 +431,7 @@ label.flabel{font-size:9px;font-weight:700;letter-spacing:1.3px;text-transform:u
         <div class="sig-actions"><button type="button" class="sig-clear" onclick="clr('sigC','sigCph')">Clear</button><div class="sig-note">Signing confirms you have read<br>and agreed to all terms above.</div></div>
       </div>
       <input type="hidden" name="customer_signature" id="cSigD">
+      <input type="hidden" name="acknowledgement_labels" id="acknowledgement_labels" value="">
       <button type="submit" class="sub-btn" id="cBtn">Submit Agreement &amp; Book My Haul</button>
       <div class="ok-msg" id="cOK"><h3>Booked! We will be in touch shortly.</h3><p>Your agreement has been submitted. Questions? Text <strong>382-889-0777</strong>.</p></div>
     </div>
@@ -423,11 +570,130 @@ label.flabel{font-size:9px;font-weight:700;letter-spacing:1.3px;text-transform:u
   <div class="ft"><div><div class="ft-b">HiveHaul&#x2122; Provider Sheet</div><div class="ft-s">Internal use only</div></div><div class="ft-r">ToolHive&#x2122; &#xB7; 382-889-0777</div></div>
 </div>
 </div>
+</div>
 
+<div id="managerOnly" class="manager-view">
+<div class="wrap">
+  <div id="login" class="login">
+    <h1>HiveHaul™</h1>
+    <div class="sub">Manager Panel</div>
+    <label>Manager Password</label>
+    <input id="password" type="password" placeholder="Enter password" onkeydown="if(event.key==='Enter') unlockPanel()" />
+    <button class="approve" onclick="unlockPanel()">Unlock</button>
+    <div id="loginError" class="error">Wrong password.</div>
+  </div>
+
+  <div id="panel">
+    <div class="topbar">
+      <div>
+        <h1>HiveHaul™ Manager Panel</h1>
+        <div class="sub">Review requests, approve/deny, quote, deposit, and payment status.</div>
+      </div>
+      <div>
+        <button class="ghost" onclick="loadJobs()">Refresh</button>
+        <button class="ghost" onclick="lockPanel()">Lock</button>
+      </div>
+    </div>
+    <div id="jobs">Loading requests...</div>
+  </div>
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 function switchTab(t,btn){document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));document.getElementById('panel-'+t).classList.add('active');btn.classList.add('active');}
 const td=new Date().toISOString().slice(0,10),nd=new Date().toISOString().slice(0,16);
 document.getElementById('cDate').value=td;document.getElementById('cSigned').value=td;document.getElementById('pDate').value=td;document.getElementById('pST').value=nd;
+
+const HIVEHAUL_CHECKBOX_LABELS = {
+  chk1: 'Drawers, doors and moving parts secured',
+  chk2: 'Fragile items, screens and glass wrapped',
+  chk3: 'Adequate manpower present at pickup',
+  chk4: 'Adequate manpower present at delivery',
+  chk5: 'Customer will photograph items before loading',
+  chk6: 'Cargo is legal under Canadian law',
+  chk7: 'Delivery address accessible by full-size pickup truck',
+  chk8: 'Balance due before offloading and cargo risk accepted',
+  deposit_acknowledged: 'Booking deposit required after quote approval',
+  property_entry_waiver_accepted: 'Property entry / labour waiver accepted'
+};
+function calculateEstimate(){
+  const labourLevel=document.getElementById('labour_level')?.value || 'medium';
+  const helpersRaw=document.getElementById('helpers')?.value || '2';
+  const helpers=helpersRaw==='na' ? 0 : parseInt(helpersRaw,10);
+  const pickupAssist=document.getElementById('pickup_assist')?.value || 'yes';
+  const elevator=document.getElementById('elevator')?.value || 'no';
+  const floor=parseInt(document.getElementById('floor')?.value || '1',10);
+  const tight=document.getElementById('tight_access')?.value || 'no';
+  const stairsInvolved=document.getElementById('stairs_involved')?.value || 'no';
+  let transport=80;
+  let rate=60;
+  if(labourLevel==='na') rate=0;
+  if(labourLevel==='light') rate=45;
+  if(labourLevel==='medium' || labourLevel==='unknown') rate=60;
+  if(labourLevel==='heavy') rate=70;
+  let labour=rate*helpers;
+  if(pickupAssist==='no') labour*=0.75;
+  let adjustment=0;
+  if((elevator==='no' || stairsInvolved!=='no') && floor>=2) adjustment+=30;
+  if(tight==='yes' || tight==='unknown') adjustment+=20;
+  const total=Math.round(transport+labour+adjustment);
+  const est=document.getElementById('estimate');
+  const hidden=document.getElementById('estimated_price');
+  if(est) est.textContent='$'+total;
+  if(hidden) hidden.value=String(total);
+}
+
+function handlePickupAssistChange(){
+  const pickup=document.getElementById('pickup_assist')?.value || 'yes';
+  const weight=document.getElementById('labour_level');
+  const helpers=document.getElementById('helpers');
+  if(!weight || !helpers){calculateEstimate();return;}
+
+  if(pickup==='no'){
+    weight.innerHTML=`<option value="na">N/A</option>`;
+    helpers.innerHTML=`<option value="na">N/A</option>`;
+    weight.disabled=true;
+    helpers.disabled=true;
+  }else{
+    weight.innerHTML=`
+      <option value="light">Light — 1 person lift</option>
+      <option value="medium" selected>Medium — 2 person lift</option>
+      <option value="heavy">Heavy — extra care / effort</option>
+      <option value="unknown">Not sure</option>
+    `;
+    helpers.innerHTML=`
+      <option value="1">1 helper</option>
+      <option value="2" selected>2 helpers</option>
+      <option value="3">3+ helpers</option>
+    `;
+    weight.disabled=false;
+    helpers.disabled=false;
+  }
+  calculateEstimate();
+}
+
+function toggleLabourWaiver(){
+  const labour=document.getElementById('labour_addon')?.value || 'none';
+  const show=labour && labour!=='none';
+  const box=document.getElementById('labourWaiverBox');
+  const chkLabel=document.getElementById('labourWaiverCheck');
+  const chk=chkLabel?.querySelector('input');
+  if(box) box.style.display=show?'block':'none';
+  if(chkLabel) chkLabel.style.display=show?'flex':'none';
+  if(chk){chk.required=!!show;if(!show) chk.checked=false;}
+}
+function updateAcknowledgementLabels(){
+  const picked=[];
+  Object.keys(HIVEHAUL_CHECKBOX_LABELS).forEach(name=>{
+    const el=document.querySelector(`#cForm input[name="${name}"]`);
+    if(el && el.checked) picked.push(HIVEHAUL_CHECKBOX_LABELS[name]);
+  });
+  const hidden=document.getElementById('acknowledgement_labels');
+  if(hidden) hidden.value=picked.join(' | ');
+}
+window.addEventListener('DOMContentLoaded',()=>{handlePickupAssistChange();toggleLabourWaiver();calculateEstimate();});
+
 const pds={};
 function mkPad(id,phId,col){
   const c=document.getElementById(id);if(!c)return;
@@ -449,117 +715,186 @@ function clr(id,phId){const p=pds[id];if(!p)return;p.x.clearRect(0,0,p.c.width,p
 function calc(){const b=parseFloat(document.getElementById('bR').value)||0,k=parseFloat(document.getElementById('kR').value)||0,km=parseFloat(document.getElementById('aKm').value)||0,l=parseFloat(document.getElementById('lR').value)||0,m=parseFloat(document.getElementById('mR').value)||0,t=b+Math.max(0,km-10)*k+l+m;document.getElementById('tot').value=t.toFixed(2);document.getElementById('hTot').value=t.toFixed(2);calcBal();}
 function calcBal(){const t=parseFloat(document.getElementById('tot').value)||0,a=parseFloat(document.getElementById('adv').value)||0;document.getElementById('bal').value=Math.max(0,t-a).toFixed(2);}
 document.getElementById('tot').addEventListener('input',calcBal);
-document.getElementById('cForm').addEventListener('submit',function(e){if(!pds['sigC'].hs){e.preventDefault();alert('Please add your signature.');return;}document.getElementById('cSigD').value=pds['sigC'].c.toDataURL();const b=document.getElementById('cBtn');b.textContent='Submitting...';b.disabled=true;setTimeout(()=>{document.getElementById('cOK').style.display='block';b.style.display='none';},1200);});
+document.getElementById('cForm').addEventListener('submit',function(e){toggleLabourWaiver();calculateEstimate();updateAcknowledgementLabels();if(!pds['sigC'].hs){e.preventDefault();alert('Please add your signature.');return;}document.getElementById('cSigD').value=pds['sigC'].c.toDataURL();const b=document.getElementById('cBtn');b.textContent='Submitting...';b.disabled=true;setTimeout(()=>{document.getElementById('cOK').style.display='block';b.style.display='none';},1200);});
 document.getElementById('pForm').addEventListener('submit',function(){document.getElementById('pSigD').value=pds['sigP'].c.toDataURL();const b=document.getElementById('pBtn');b.textContent='Saving...';b.disabled=true;setTimeout(()=>{b.textContent='Saved and Sent';},1200);});
 function resetP(){if(!confirm('Clear for new job?'))return;document.getElementById('pForm').querySelectorAll('input:not([type=radio]),textarea,select').forEach(el=>{if(el.name==='driver')el.value='Vish Shah - HiveHaul Operator';else if(el.id==='bR')el.value='59.99';else if(el.id==='kR')el.value='1.25';else if(['lR','mR','adv'].includes(el.id))el.value='0';else if(el.id==='pDate')el.value=td;else if(el.id==='pST')el.value=nd;else if(el.tagName==='SELECT')el.selectedIndex=0;else el.value='';});document.querySelectorAll('#panel-provider input[type=radio],#panel-provider input[type=checkbox]').forEach(el=>el.checked=false);calc();clr('sigP','sigPph');const b=document.getElementById('pBtn');b.textContent='Save Job Record and Send Copy';b.disabled=false;}
 function shareMe(){const u=window.location.href;if(navigator.share)navigator.share({title:'HiveHaul Service Agreement',text:'Please fill out and sign before your haul.',url:u});else navigator.clipboard.writeText(u).then(()=>alert('Link copied! Send via text or email.'));}
 </script>
 <script>
-function handlePickupAssistChange() {
-  const pickup = document.getElementById("pickup_assist").value;
 
-  const helpers = document.getElementById("helpers");
-  const labour = document.getElementById("labour_addon");
+// IMPORTANT: use the Project URL and anon public key only. Never use service_role key in HTML.
+const SUPABASE_URL = "PASTE_YOUR_SUPABASE_URL";
+const SUPABASE_ANON_KEY = "PASTE_YOUR_SUPABASE_ANON_KEY";
 
-  if (pickup === "no") {
-    // Set to NA
-    helpers.innerHTML = `<option value="na">N/A</option>`;
-    labour.innerHTML = `<option value="na">N/A</option>`;
+// Change this before uploading. This is light protection for Phase 1 testing, not full security.
+const MANAGER_PASSWORD = "HiveHaul2026";
 
-    // Disable
-    helpers.disabled = true;
-    labour.disabled = true;
+const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-  } else {
-    // Restore options
-    helpers.innerHTML = `
-      <option value="1">1 helper</option>
-      <option value="2" selected>2 helpers</option>
-      <option value="3">3+ helpers</option>
-    `;
+function unlockPanel(){
+  const pass = document.getElementById("password").value;
+  if(pass !== MANAGER_PASSWORD){
+    document.getElementById("loginError").style.display = "block";
+    return;
+  }
+  sessionStorage.setItem("hivehaul_manager_unlocked", "true");
+  document.getElementById("login").style.display = "none";
+  document.getElementById("panel").style.display = "block";
+  loadJobs();
+}
 
-    labour.innerHTML = `
-      <option value="none">No labour beyond curb-to-curb</option>
-      <option value="light">Light labour</option>
-      <option value="medium">Medium labour</option>
-      <option value="heavy">Heavy labour</option>
-    `;
+function lockPanel(){
+  sessionStorage.removeItem("hivehaul_manager_unlocked");
+  document.getElementById("panel").style.display = "none";
+  document.getElementById("login").style.display = "block";
+  document.getElementById("password").value = "";
+}
 
-    helpers.disabled = false;
-    labour.disabled = false;
+function safe(value){
+  return String(value ?? "").replace(/[&<>'"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;","\"":"&quot;"}[c]));
+}
+
+async function loadJobs(){
+  const holder = document.getElementById("jobs");
+  holder.innerHTML = "Loading requests...";
+
+  const { data, error } = await supabaseClient
+    .from("hivehaul_requests")
+    .select("*")
+    .order("created_at", { ascending:false });
+
+  if(error){
+    holder.innerHTML = "Failed to load jobs. Check Supabase URL/key and SELECT policy.";
+    console.error(error);
+    return;
   }
 
-  // Recalculate price if needed
-  if (typeof calculateEstimate === "function") {
-    calculateEstimate();
+  if(!data || data.length === 0){
+    holder.innerHTML = "No requests yet.";
+    return;
+  }
+
+  holder.innerHTML = data.map(job => {
+    const ack = Array.isArray(job.acknowledgements) ? job.acknowledgements : [];
+    return `
+      <div class="job">
+        <h2>${safe(job.full_name) || "No Name"}</h2>
+        <span class="status">${safe(job.status) || "New Request"}</span>
+        <p class="small">
+          📞 ${safe(job.phone)}<br>
+          ✉️ ${safe(job.email)}<br><br>
+          📍 Pickup: ${safe(job.pickup_address)}<br>
+          📍 Drop-off: ${safe(job.dropoff_address)}<br><br>
+          Load: ${safe(job.load_type)}<br>
+          Dimensions: ${safe(job.approx_dimensions)}<br>
+          Weight: ${safe(job.approx_weight)}<br>
+          Date/Time: ${safe(job.preferred_date)} ${safe(job.preferred_time)}
+        </p>
+
+        <div class="small">
+          <strong>Access / Labour</strong><br>
+          <span class="pill">Pickup assist: ${safe(job.pickup_assist)}</span>
+          <span class="pill">Labour: ${safe(job.labour_level)}</span>
+          <span class="pill">Helpers: ${safe(job.helpers_required)}</span>
+          <span class="pill">Elevator: ${safe(job.elevator_access)}</span>
+          <span class="pill">Floor: ${safe(job.floor_level)}</span>
+          <span class="pill">Tight access: ${safe(job.tight_access)}</span>
+          <span class="pill">Parking: ${safe(job.parking_access)}</span>
+        </div>
+
+        <p class="small"><strong>Acknowledgements:</strong><br>${ack.length ? ack.map(a => "✔ " + safe(a)).join("<br>") : "None recorded"}</p>
+
+        <div class="grid">
+          <div>
+            <label>Quote Amount</label>
+            <input id="quote-${job.id}" type="number" value="${safe(job.quote_amount)}" placeholder="Example: 200">
+          </div>
+          <div>
+            <label>Deposit Required</label>
+            <input id="deposit-${job.id}" type="number" value="${safe(job.deposit_required ?? 30)}">
+          </div>
+        </div>
+
+        <label>Status</label>
+        <select id="status-${job.id}">
+          ${["New Request","Approved - Awaiting Client","Denied","Deposit Pending","Deposit Paid","Booked","Assigned to Provider","In Progress","Completed","Completed - Payment Pending","Closed"].map(s => `<option ${job.status === s ? "selected" : ""}>${s}</option>`).join("")}
+        </select>
+
+        <label>Manager Notes</label>
+        <textarea id="notes-${job.id}" placeholder="Internal notes">${safe(job.manager_notes)}</textarea>
+
+        <div class="actions">
+          <button class="save" onclick="saveJob('${job.id}')">Save Updates</button>
+          <button class="approve" onclick="approveJob('${job.id}')">Approve</button>
+          <button class="deny" onclick="denyJob('${job.id}')">Deny</button>
+        </div>
+      </div>`;
+  }).join("");
+}
+
+async function saveJob(id){
+  const quote = Number(document.getElementById(`quote-${id}`).value || 0);
+  const deposit = Number(document.getElementById(`deposit-${id}`).value || 0);
+  const status = document.getElementById(`status-${id}`).value;
+  const notes = document.getElementById(`notes-${id}`).value;
+
+  const update = {
+    quote_amount: quote || null,
+    deposit_required: deposit || null,
+    balance_due: quote ? Math.max(quote - deposit, 0) : null,
+    status,
+    manager_notes: notes
+  };
+
+  const { error } = await supabaseClient
+    .from("hivehaul_requests")
+    .update(update)
+    .eq("id", id);
+
+  if(error){
+    alert("Save failed. Check UPDATE policy.");
+    console.error(error);
+    return;
+  }
+
+  alert("Saved");
+  loadJobs();
+}
+
+async function approveJob(id){
+  document.getElementById(`status-${id}`).value = "Approved - Awaiting Client";
+  await saveJob(id);
+}
+
+async function denyJob(id){
+  document.getElementById(`status-${id}`).value = "Denied";
+  await saveJob(id);
+}
+
+if(sessionStorage.getItem("hivehaul_manager_unlocked") === "true"){
+  document.getElementById("login").style.display = "none";
+  document.getElementById("panel").style.display = "block";
+  loadJobs();
+}
+
+</script>
+
+<script>
+function initHiveHaulSingleFileViews(){
+  const params = new URLSearchParams(window.location.search);
+  const showManager = params.get('manager') === '1' || params.get('admin') === '1' || window.location.hash === '#manager';
+  const client = document.getElementById('clientOnly');
+  const manager = document.getElementById('managerOnly');
+  if(!client || !manager) return;
+  if(showManager){
+    client.style.display='none';
+    manager.style.display='block';
+  } else {
+    client.style.display='block';
+    manager.style.display='none';
   }
 }
+window.addEventListener('DOMContentLoaded', initHiveHaulSingleFileViews);
 </script>
 </body>
 </html>
-<script>
-async function submitHiveHaulForm(e) {
-  e.preventDefault();
-
-  const form = e.target;
-
-  // --- BASIC FIELDS ---
-  const data = {
-    full_name: form.full_name.value,
-    phone: form.phone.value,
-    email: form.email.value,
-
-    pickup_address: form.pickup_address.value,
-    dropoff_address: form.dropoff_address.value,
-
-    load_type: form.load_type.value,
-    dimensions: form.dimensions.value,
-    weight: form.weight.value,
-
-    preferred_date: form.date.value,
-    preferred_time: form.time.value,
-
-    notes: form.notes.value,
-
-    // --- CHECKBOX MAPPING ---
-    acknowledgements: [
-      form.chk1.checked && "Items secured (drawers/doors taped)",
-      form.chk2.checked && "Fragile items wrapped",
-      form.chk3.checked && "Manpower available at pickup",
-      form.chk4.checked && "Manpower available at delivery",
-      form.chk5.checked && "Client will photograph items",
-      form.chk6.checked && "No illegal items",
-      form.chk7.checked && "Access suitable for pickup truck",
-      form.chk8.checked && "Balance due before offloading"
-    ].filter(Boolean),
-
-    // --- STRUCTURED FLAGS (IMPORTANT) ---
-    no_illegal_items: form.chk6.checked,
-    curb_access_confirmed: form.chk7.checked,
-    payment_terms_acknowledged: form.chk8.checked,
-
-    // --- LABOUR (if added) ---
-    labour_required: form.labour?.value !== "none",
-    labour_level: form.labour?.value || null,
-
-    // --- STATUS ---
-    status: "New Request",
-    deposit_required: 30,
-    deposit_paid: false
-  };
-
-  // --- SEND TO SUPABASE ---
-  const res = await fetch("/api/create-request", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data)
-  });
-
-  if (res.ok) {
-    document.getElementById("successMessage").style.display = "block";
-    form.reset();
-  } else {
-    alert("Something went wrong. Try again.");
-  }
-}
-</script>

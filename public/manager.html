@@ -1,168 +1,196 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>HiveHaul Manager Panel</title>
+  <title>HiveHaul™ Manager Panel</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
   <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #111827;
-      color: white;
-      padding: 16px;
-    }
-
-    h1 {
-      color: #f59e0b;
-      margin-bottom: 16px;
-    }
-
-    .job {
-      background: #1f2937;
-      border: 1px solid #374151;
-      border-radius: 14px;
-      padding: 16px;
-      margin-bottom: 16px;
-    }
-
-    .status {
-      color: #f59e0b;
-      font-weight: bold;
-    }
-
-    label {
-      display: block;
-      margin-top: 10px;
-      font-size: 13px;
-      color: #d1d5db;
-    }
-
-    input, textarea, select {
-      width: 100%;
-      padding: 10px;
-      margin-top: 4px;
-      border-radius: 8px;
-      border: none;
-      box-sizing: border-box;
-    }
-
-    button {
-      margin-top: 10px;
-      padding: 11px 14px;
-      border: none;
-      border-radius: 8px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    .approve { background: #f59e0b; color: #111827; }
-    .deny { background: #ef4444; color: white; }
-    .save { background: #10b981; color: white; }
-    .small { font-size: 13px; color: #d1d5db; line-height: 1.5; }
+    :root{--amber:#F59E0B;--dark:#111827;--card:#1f2937;--line:#374151;--muted:#d1d5db;--green:#10b981;--red:#ef4444;}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Arial,sans-serif;background:var(--dark);color:white;padding:16px;}
+    .wrap{max-width:980px;margin:0 auto;}
+    h1{color:var(--amber);margin:0 0 6px;font-size:28px;}
+    .sub{color:var(--muted);font-size:13px;margin-bottom:18px;}
+    .login,.job{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:16px;box-shadow:0 10px 30px rgba(0,0,0,.18);}
+    .login{max-width:420px;margin:60px auto;}
+    .topbar{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-bottom:14px;}
+    .status{color:var(--amber);font-weight:bold;display:inline-block;margin:4px 0 10px;}
+    label{display:block;margin-top:10px;font-size:12px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.6px;}
+    input,textarea,select{width:100%;padding:11px;margin-top:5px;border-radius:10px;border:1px solid var(--line);background:#111827;color:white;box-sizing:border-box;}
+    textarea{min-height:74px;resize:vertical;}
+    button{margin-top:10px;padding:11px 14px;border:none;border-radius:10px;font-weight:bold;cursor:pointer;}
+    .approve{background:var(--amber);color:#111827;}
+    .deny{background:var(--red);color:white;}
+    .save{background:var(--green);color:white;}
+    .ghost{background:#374151;color:white;}
+    .small{font-size:13px;color:var(--muted);line-height:1.55;}
+    .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;}
+    .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px;}
+    .pill{display:inline-block;background:#111827;border:1px solid var(--line);border-radius:999px;padding:5px 9px;font-size:12px;color:var(--muted);margin:3px 4px 3px 0;}
+    .error{color:#fecaca;font-size:13px;margin-top:10px;display:none;}
+    #panel{display:none;}
+    @media(max-width:720px){.grid{grid-template-columns:1fr}.actions button{flex:1}.topbar{align-items:flex-start}}
   </style>
 </head>
-
 <body>
-  <h1>HiveHaul Manager Panel</h1>
+<div class="wrap">
+  <div id="login" class="login">
+    <h1>HiveHaul™</h1>
+    <div class="sub">Manager Panel</div>
+    <label>Manager Password</label>
+    <input id="password" type="password" placeholder="Enter password" onkeydown="if(event.key==='Enter') unlockPanel()" />
+    <button class="approve" onclick="unlockPanel()">Unlock</button>
+    <div id="loginError" class="error">Wrong password.</div>
+  </div>
 
-  <div id="jobs">Loading requests...</div>
+  <div id="panel">
+    <div class="topbar">
+      <div>
+        <h1>HiveHaul™ Manager Panel</h1>
+        <div class="sub">Review requests, approve/deny, quote, deposit, and payment status.</div>
+      </div>
+      <div>
+        <button class="ghost" onclick="loadJobs()">Refresh</button>
+        <button class="ghost" onclick="lockPanel()">Lock</button>
+      </div>
+    </div>
+    <div id="jobs">Loading requests...</div>
+  </div>
+</div>
 
 <script>
-const SUPABASE_URL = "https://jucyjfwrkakjtyfxzpbq.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp1Y3lqZndya2FranR5Znh6cGJxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwMjE2NTAsImV4cCI6MjA5MTU5NzY1MH0.zxcPkFBtAROQHCee37Xqj9YiiJWG7SxdySBI2bEc6y4";
+// IMPORTANT: use the Project URL and anon public key only. Never use service_role key in HTML.
+const SUPABASE_URL = "PASTE_YOUR_SUPABASE_URL";
+const SUPABASE_ANON_KEY = "PASTE_YOUR_SUPABASE_ANON_KEY";
+
+// Change this before uploading. This is light protection for Phase 1 testing, not full security.
+const MANAGER_PASSWORD = "HiveHaul2026";
 
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-async function loadJobs() {
+function unlockPanel(){
+  const pass = document.getElementById("password").value;
+  if(pass !== MANAGER_PASSWORD){
+    document.getElementById("loginError").style.display = "block";
+    return;
+  }
+  sessionStorage.setItem("hivehaul_manager_unlocked", "true");
+  document.getElementById("login").style.display = "none";
+  document.getElementById("panel").style.display = "block";
+  loadJobs();
+}
+
+function lockPanel(){
+  sessionStorage.removeItem("hivehaul_manager_unlocked");
+  document.getElementById("panel").style.display = "none";
+  document.getElementById("login").style.display = "block";
+  document.getElementById("password").value = "";
+}
+
+function safe(value){
+  return String(value ?? "").replace(/[&<>'"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;","\"":"&quot;"}[c]));
+}
+
+async function loadJobs(){
+  const holder = document.getElementById("jobs");
+  holder.innerHTML = "Loading requests...";
+
   const { data, error } = await supabaseClient
     .from("hivehaul_requests")
     .select("*")
-    .order("created_at", { ascending: false });
+    .order("created_at", { ascending:false });
 
-  if (error) {
-    document.getElementById("jobs").innerHTML = "Failed to load jobs.";
+  if(error){
+    holder.innerHTML = "Failed to load jobs. Check Supabase URL/key and SELECT policy.";
     console.error(error);
     return;
   }
 
-  document.getElementById("jobs").innerHTML = data.map(job => `
-    <div class="job">
-      <h2>${job.full_name || "No Name"}</h2>
-      <p class="status">${job.status || "New Request"}</p>
+  if(!data || data.length === 0){
+    holder.innerHTML = "No requests yet.";
+    return;
+  }
 
-      <p class="small">
-        📞 ${job.phone || ""}<br>
-        ✉️ ${job.email || ""}<br><br>
-        📍 Pickup: ${job.pickup_address || ""}<br>
-        📍 Drop-off: ${job.dropoff_address || ""}<br><br>
-        Load: ${job.load_type || ""}<br>
-        Weight: ${job.approx_weight || ""}<br>
-        Dimensions: ${job.approx_dimensions || ""}<br>
-        Pickup assist: ${job.pickup_assist || ""}<br>
-        Labour: ${job.labour_level || ""}<br>
-        Helpers: ${job.helpers_required || ""}<br>
-        Elevator: ${job.elevator_access || ""}<br>
-        Floor: ${job.floor_level || ""}<br>
-        Tight access: ${job.tight_access || ""}
-      </p>
+  holder.innerHTML = data.map(job => {
+    const ack = Array.isArray(job.acknowledgements) ? job.acknowledgements : [];
+    return `
+      <div class="job">
+        <h2>${safe(job.full_name) || "No Name"}</h2>
+        <span class="status">${safe(job.status) || "New Request"}</span>
+        <p class="small">
+          📞 ${safe(job.phone)}<br>
+          ✉️ ${safe(job.email)}<br><br>
+          📍 Pickup: ${safe(job.pickup_address)}<br>
+          📍 Drop-off: ${safe(job.dropoff_address)}<br><br>
+          Load: ${safe(job.load_type)}<br>
+          Dimensions: ${safe(job.approx_dimensions)}<br>
+          Weight: ${safe(job.approx_weight)}<br>
+          Date/Time: ${safe(job.preferred_date)} ${safe(job.preferred_time)}
+        </p>
 
-      <p class="small">
-        <strong>Acknowledgements:</strong><br>
-        ${(job.acknowledgements || []).map(a => "✔ " + a).join("<br>")}
-      </p>
+        <div class="small">
+          <strong>Access / Labour</strong><br>
+          <span class="pill">Pickup assist: ${safe(job.pickup_assist)}</span>
+          <span class="pill">Labour: ${safe(job.labour_level)}</span>
+          <span class="pill">Helpers: ${safe(job.helpers_required)}</span>
+          <span class="pill">Elevator: ${safe(job.elevator_access)}</span>
+          <span class="pill">Floor: ${safe(job.floor_level)}</span>
+          <span class="pill">Tight access: ${safe(job.tight_access)}</span>
+          <span class="pill">Parking: ${safe(job.parking_access)}</span>
+        </div>
 
-      <label>Quote Amount</label>
-      <input id="quote-${job.id}" type="number" value="${job.quote_amount || ""}" placeholder="Example: 200">
+        <p class="small"><strong>Acknowledgements:</strong><br>${ack.length ? ack.map(a => "✔ " + safe(a)).join("<br>") : "None recorded"}</p>
 
-      <label>Deposit Required</label>
-      <input id="deposit-${job.id}" type="number" value="${job.deposit_required || 30}">
+        <div class="grid">
+          <div>
+            <label>Quote Amount</label>
+            <input id="quote-${job.id}" type="number" value="${safe(job.quote_amount)}" placeholder="Example: 200">
+          </div>
+          <div>
+            <label>Deposit Required</label>
+            <input id="deposit-${job.id}" type="number" value="${safe(job.deposit_required ?? 30)}">
+          </div>
+        </div>
 
-      <label>Manager Notes</label>
-      <textarea id="notes-${job.id}" placeholder="Internal notes">${job.manager_notes || ""}</textarea>
+        <label>Status</label>
+        <select id="status-${job.id}">
+          ${["New Request","Approved - Awaiting Client","Denied","Deposit Pending","Deposit Paid","Booked","Assigned to Provider","In Progress","Completed","Completed - Payment Pending","Closed"].map(s => `<option ${job.status === s ? "selected" : ""}>${s}</option>`).join("")}
+        </select>
 
-      <label>Status</label>
-      <select id="status-${job.id}">
-        <option ${job.status === "New Request" ? "selected" : ""}>New Request</option>
-        <option ${job.status === "Approved - Awaiting Client" ? "selected" : ""}>Approved - Awaiting Client</option>
-        <option ${job.status === "Denied" ? "selected" : ""}>Denied</option>
-        <option ${job.status === "Deposit Pending" ? "selected" : ""}>Deposit Pending</option>
-        <option ${job.status === "Deposit Paid" ? "selected" : ""}>Deposit Paid</option>
-        <option ${job.status === "Booked" ? "selected" : ""}>Booked</option>
-        <option ${job.status === "Assigned to Provider" ? "selected" : ""}>Assigned to Provider</option>
-        <option ${job.status === "Completed" ? "selected" : ""}>Completed</option>
-        <option ${job.status === "Completed - Payment Pending" ? "selected" : ""}>Completed - Payment Pending</option>
-      </select>
+        <label>Manager Notes</label>
+        <textarea id="notes-${job.id}" placeholder="Internal notes">${safe(job.manager_notes)}</textarea>
 
-      <button class="save" onclick="saveJob('${job.id}')">Save Updates</button>
-      <button class="approve" onclick="approveJob('${job.id}')">Approve</button>
-      <button class="deny" onclick="denyJob('${job.id}')">Deny</button>
-    </div>
-  `).join("");
+        <div class="actions">
+          <button class="save" onclick="saveJob('${job.id}')">Save Updates</button>
+          <button class="approve" onclick="approveJob('${job.id}')">Approve</button>
+          <button class="deny" onclick="denyJob('${job.id}')">Deny</button>
+        </div>
+      </div>`;
+  }).join("");
 }
 
-async function saveJob(id) {
+async function saveJob(id){
   const quote = Number(document.getElementById(`quote-${id}`).value || 0);
   const deposit = Number(document.getElementById(`deposit-${id}`).value || 0);
   const status = document.getElementById(`status-${id}`).value;
   const notes = document.getElementById(`notes-${id}`).value;
-  
+
+  const update = {
+    quote_amount: quote || null,
+    deposit_required: deposit || null,
+    balance_due: quote ? Math.max(quote - deposit, 0) : null,
+    status,
+    manager_notes: notes
+  };
 
   const { error } = await supabaseClient
     .from("hivehaul_requests")
-    .update({
-      quote_amount: quote,
-      deposit_required: deposit,
-      balance_due: quote - deposit,
-      status,
-      manager_notes: notes
-    })
+    .update(update)
     .eq("id", id);
 
-  if (error) {
-    alert("Save failed");
+  if(error){
+    alert("Save failed. Check UPDATE policy.");
     console.error(error);
     return;
   }
@@ -171,17 +199,21 @@ async function saveJob(id) {
   loadJobs();
 }
 
-async function approveJob(id) {
+async function approveJob(id){
   document.getElementById(`status-${id}`).value = "Approved - Awaiting Client";
   await saveJob(id);
 }
 
-async function denyJob(id) {
+async function denyJob(id){
   document.getElementById(`status-${id}`).value = "Denied";
   await saveJob(id);
 }
 
-loadJobs();
+if(sessionStorage.getItem("hivehaul_manager_unlocked") === "true"){
+  document.getElementById("login").style.display = "none";
+  document.getElementById("panel").style.display = "block";
+  loadJobs();
+}
 </script>
 </body>
 </html>

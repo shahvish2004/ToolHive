@@ -925,8 +925,8 @@ function shareMe(){const u=window.location.href;if(navigator.share)navigator.sha
 <script>
 
 // IMPORTANT: use the Project URL and anon public key only. Never use service_role key in HTML.
-const SUPABASE_URL = "PASTE_YOUR_SUPABASE_URL";
-const SUPABASE_ANON_KEY = "PASTE_YOUR_SUPABASE_ANON_KEY";
+const SUPABASE_URL = "https://jucyjfwrkakjtyfxzpbq.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp1Y3lqZndya2FranR5Znh6cGJxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwMjE2NTAsImV4cCI6MjA5MTU5NzY1MH0.zxcPkFBtAROQHCee37Xqj9YiiJWG7SxdySBI2bEc6y4";
 
 // Change this before uploading. This is light protection for Phase 1 testing, not full security.
 const MANAGER_PASSWORD = "HiveHaul2026";
@@ -1126,6 +1126,66 @@ function initHiveHaulSingleFileViews(){
   }
 }
 window.addEventListener('DOMContentLoaded', initHiveHaulSingleFileViews);
+</script>
+<script>
+document.getElementById("cForm").addEventListener("submit", async function(e) {
+  e.preventDefault();
+
+  console.log("Submit clicked");
+
+  const payload = {
+    name: document.querySelector('input[name="name"]')?.value || "",
+    phone: document.querySelector('input[name="phone"]')?.value || "",
+  };
+
+  console.log("Payload:", payload);
+
+  const { data, error } = await supabase
+    .from("hivehaul_requests")
+    .insert([payload])
+    .select();
+
+  if (error) {
+    console.error(error);
+    alert("Error: " + error.message);
+  } else {
+    alert("Submitted successfully");
+  }
+});
+</script>
+<script>
+document.getElementById("cForm").addEventListener("submit", async function(e) {
+  e.preventDefault();
+
+  console.log("Submit clicked");
+
+  try {
+    const payload = {
+      name: document.querySelector('input[name="name"]')?.value || "",
+      phone: document.querySelector('input[name="phone"]')?.value || "",
+    };
+
+    console.log("Payload:", payload);
+
+    const { data, error } = await supabase
+      .from("hivehaul_requests")
+      .insert([payload])
+      .select();
+
+    if (error) {
+      console.error("Supabase error:", error);
+      alert("Submit failed: " + error.message);
+      return;
+    }
+
+    console.log("Success:", data);
+    alert("Request submitted successfully");
+
+  } catch (err) {
+    console.error("Unexpected error:", err);
+    alert("Something broke: " + err.message);
+  }
+});
 </script>
 </body>
 </html>
